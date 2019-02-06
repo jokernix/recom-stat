@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "recomStat": {
+    "recom-stat": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -36,7 +36,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/recomStat",
+            "outputPath": "dist/recom-stat",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -46,7 +46,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.scss"
+              "src/styles/styles.scss"
             ],
             "scripts": []
           },
@@ -80,18 +80,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "recomStat:build"
+            "browserTarget": "recom-stat:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "recomStat:build:production"
+              "browserTarget": "recom-stat:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "recomStat:build"
+            "browserTarget": "recom-stat:build"
           }
         },
         "test": {
@@ -102,7 +102,7 @@
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
             "styles": [
-              "src/styles.scss"
+              "src/styles/styles.scss"
             ],
             "scripts": [],
             "assets": [
@@ -126,5 +126,5 @@
       }
     }
   },
-  "defaultProject": "recomStat"
+  "defaultProject": "recom-stat"
 }

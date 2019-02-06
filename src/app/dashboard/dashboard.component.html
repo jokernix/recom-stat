@@ -1,0 +1,14 @@
+<mat-toolbar color="primary">
+    <span class="mr-auto">Recom Stat</span>
+
+    <mat-menu #appMenu="matMenu" yPosition="below">
+        <button mat-menu-item (click)="logout()">Logout</button>
+    </mat-menu>
+
+    <button *ngIf="user$ | async; let user"
+            mat-button
+            [matMenuTriggerFor]="appMenu">
+        {{user.name}}
+        <mat-icon>more_vert</mat-icon>
+    </button>
+</mat-toolbar>

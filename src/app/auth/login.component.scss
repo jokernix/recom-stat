@@ -1,0 +1,16 @@
+.login-register {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  min-width: 350px;
+
+  mat-form-field {
+    margin-bottom: 15px;
+  }
+}
