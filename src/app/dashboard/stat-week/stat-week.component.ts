@@ -20,6 +20,7 @@ export class StatWeekComponent implements OnInit {
 
   constructor(private store: Store) {}
 
+  // TODO add startDate and endDate to Store
   // TODO add holidays and working days
   // TODO add prev and next button
   ngOnInit(): void {
