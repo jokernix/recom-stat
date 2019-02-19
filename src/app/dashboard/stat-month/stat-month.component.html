@@ -1,0 +1,16 @@
+<mat-card>
+  <mat-card-title>Month</mat-card-title>
+
+  <ng-container *ngIf="month$ | async as month">
+    <ng-container *ngIf="!month.loading else loading">
+      <mat-card-subtitle>{{ today | date : 'MMMM' }}</mat-card-subtitle>
+
+      <p>{{ month.duration | time }} <span class="normal-time">/ {{ normalTime | time }}</span></p>
+      <p>{{ month.activityPercent }}%</p>
+    </ng-container>
+
+    <ng-template #loading>
+      <mat-card-subtitle>loading...</mat-card-subtitle>
+    </ng-template>
+  </ng-container>
+</mat-card>

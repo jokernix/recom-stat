@@ -4,7 +4,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
-import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
 import { NgxsModule } from '@ngxs/store';
 import { environment } from '../environments/environment';
@@ -14,22 +13,36 @@ import { AppComponent } from './app.component';
 import { AuthState } from './auth/auth.state';
 import { LoginComponent } from './auth/login.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { DatesState } from './dashboard/dates.state';
+import { StatDayComponent } from './dashboard/stat-day/stat-day.component';
+import { StatHalfComponent } from './dashboard/stat-half/stat-half.component';
+import { StatMonthComponent } from './dashboard/stat-month/stat-month.component';
+import { StatWeekComponent } from './dashboard/stat-week/stat-week.component';
 import { ApiPrefixInterceptor } from './interceptors/api-prefix.interceptor';
 import { AppTokenInterceptor } from './interceptors/app-token.interceptor';
 import { AuthTokenInterceptor } from './interceptors/auth-token.interceptor';
 import { MaterialModule } from './material.module';
+import { TimePipe } from './services/time.pipe';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, DashboardComponent],
+  declarations: [
+    AppComponent,
+    LoginComponent,
+    DashboardComponent,
+    TimePipe,
+    StatDayComponent,
+    StatWeekComponent,
+    StatHalfComponent,
+    StatMonthComponent
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgxsModule.forRoot([AuthState], { developmentMode: !environment.production }),
+    NgxsModule.forRoot([AuthState, DatesState], { developmentMode: !environment.production }),
     NgxsRouterPluginModule.forRoot(),
-    NgxsLoggerPluginModule.forRoot(),
     NgxsReduxDevtoolsPluginModule.forRoot({
       disabled: environment.production
     }),

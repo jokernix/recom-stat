@@ -3,10 +3,31 @@
 //@import '~@angular/material/prebuilt-themes/pink-bluegrey.css';
 @import '~@angular/material/prebuilt-themes/purple-green.css';
 
+html, body, mat-sidenav-container {
+  height: 100%;
+}
+
 body {
   margin: 0;
 }
 
 * {
   box-sizing: border-box;
+}
+
+.widget-values {
+  list-style: none;
+  padding-left: 0;
+
+  li {
+    margin-bottom: 10px;
+  }
+
+  &__label {
+    font-size: 11px;
+  }
+  &__value {
+    font-size: 24px;
+    font-weight: 300;
+  }
 }

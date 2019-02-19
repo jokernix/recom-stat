@@ -1,0 +1,29 @@
+<mat-card>
+    <mat-card-title>Week</mat-card-title>
+
+    <ng-container *ngIf="week$ | async as week">
+        <ng-container *ngIf="!week.loading else loading">
+            <mat-card-subtitle>{{ startDate | date }} - {{ endDate | date }}</mat-card-subtitle>
+
+            <ul class="widget-values">
+                <li>
+                    <div class="widget-values__label">Avg. Activity</div>
+                    <div class="widget-values__value">{{ week.activityPercent || 0 }}%</div>
+                </li>
+                <li>
+                    <div class="widget-values__label">Time</div>
+                    <div class="widget-values__value">{{ week.duration | time }} / {{ dynamicNormOfWorkingTime | time }}</div>
+                </li>
+                <li>
+                    <div class="widget-values__label">Norm of working time</div>
+                    <div class="widget-values__value">{{ normOfWorkingTime | time }}</div>
+                </li>
+            </ul>
+        </ng-container>
+
+        <ng-template #loading>
+            <mat-card-subtitle>loading...</mat-card-subtitle>
+        </ng-template>
+    </ng-container>
+</mat-card>
+

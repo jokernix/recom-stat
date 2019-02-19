@@ -1,3 +1,14 @@
 .mr-auto {
   margin-right: auto;
 }
+
+.flex {
+  display: flex;
+  padding: 0 1rem;
+}
+
+.col {
+  flex: 1 0 25%;
+  padding: 1rem;
+}
+

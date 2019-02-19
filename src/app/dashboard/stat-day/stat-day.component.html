@@ -1,0 +1,16 @@
+<mat-card>
+    <mat-card-title>Day</mat-card-title>
+
+    <ng-container *ngIf="day$ | async as day">
+        <ng-container *ngIf="!day.loading else loading">
+            <mat-card-subtitle>{{ day?.dates[0]?.date | date }}</mat-card-subtitle>
+
+            <p>{{ day.duration | time }} <span class="normal-time">/ 08:00:00</span></p>
+            <p>{{ day.activityPercent }}%</p>
+        </ng-container>
+
+        <ng-template #loading>
+            <mat-card-subtitle>loading...</mat-card-subtitle>
+        </ng-template>
+    </ng-container>
+</mat-card>
