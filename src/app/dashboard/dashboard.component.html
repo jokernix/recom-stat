@@ -8,7 +8,7 @@
     <button *ngIf="user$ | async; let user"
             mat-button
             [matMenuTriggerFor]="appMenu">
-        {{user.name}}
+        <span class="d-xs-none">{{user.name}}</span>
         <mat-icon>more_vert</mat-icon>
     </button>
 </mat-toolbar>
