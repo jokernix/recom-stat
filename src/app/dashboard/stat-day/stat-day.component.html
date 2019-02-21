@@ -3,10 +3,22 @@
 
     <ng-container *ngIf="day$ | async as day">
         <ng-container *ngIf="!day.loading else loading">
-            <mat-card-subtitle>{{ day?.dates[0]?.date | date }}</mat-card-subtitle>
+            <mat-card-subtitle>{{ today | date }}</mat-card-subtitle>
 
-            <p>{{ day.duration | time }} <span class="normal-time">/ 08:00:00</span></p>
-            <p>{{ day.activityPercent }}%</p>
+            <ul class="widget-values">
+                <li>
+                    <div class="widget-values__label">Avg. Activity</div>
+                    <div class="widget-values__value">{{ day.activityPercent || 0 }}%</div>
+                </li>
+                <li>
+                    <div class="widget-values__label">Time</div>
+                    <div class="widget-values__value">{{ day.duration | time }} / {{ dynamicNormOfWorkingTime | time }}</div>
+                </li>
+                <li>
+                    <div class="widget-values__label">Norm of working time</div>
+                    <div class="widget-values__value">{{ normOfWorkingTime | time }}</div>
+                </li>
+            </ul>
         </ng-container>
 
         <ng-template #loading>

@@ -11,6 +11,16 @@ export interface DatesStateItemModel {
   duration?: number;
   loading: boolean;
 }
+
+export interface DatesStateDayModel extends DatesStateItemModel {
+  date: Date;
+}
+
+export interface DatesStatePeriodModel extends DatesStateItemModel {
+  startPeriod: Date;
+  endPeriod: Date;
+}
+
 export interface DatesStateModel {
   day: DatesStateItemModel;
   week: DatesStateItemModel;
