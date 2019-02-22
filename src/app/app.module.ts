@@ -5,6 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
+import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { NgxsModule } from '@ngxs/store';
 import { environment } from '../environments/environment';
 
@@ -42,6 +43,9 @@ import { TimePipe } from './services/time.pipe';
     ReactiveFormsModule,
     HttpClientModule,
     NgxsModule.forRoot([AuthState, DatesState], { developmentMode: !environment.production }),
+    NgxsStoragePluginModule.forRoot({
+      key: ['auth.user']
+    }),
     NgxsRouterPluginModule.forRoot(),
     NgxsReduxDevtoolsPluginModule.forRoot({
       disabled: environment.production

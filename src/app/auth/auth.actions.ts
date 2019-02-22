@@ -1,9 +1,6 @@
 import { UserWithToken } from '../models/user-with-token.model';
 
 // Actions
-export class CheckSession {
-  static type = '[Auth] CheckSession';
-}
 export class Login {
   static type = '[Auth] Login';
   constructor(public email: string, public password: string) {}

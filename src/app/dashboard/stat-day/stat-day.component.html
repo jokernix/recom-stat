@@ -1,28 +1,35 @@
-<mat-card>
-    <mat-card-title>Day</mat-card-title>
+<mat-card *ngIf="day$ | async as day">
+    <mat-card-header>
+        <mat-card-title>Day</mat-card-title>
+        <mat-card-subtitle>{{ today | date }}</mat-card-subtitle>
 
-    <ng-container *ngIf="day$ | async as day">
-        <ng-container *ngIf="!day.loading else loading">
-            <mat-card-subtitle>{{ today | date }}</mat-card-subtitle>
+        <input matInput [matDatepicker]="picker" placeholder="Choose a date" style="width:1px;visibility:hidden;">
+        <mat-datepicker #picker [touchUi]="true"></mat-datepicker>
 
-            <ul class="widget-values">
-                <li>
-                    <div class="widget-values__label">Avg. Activity</div>
-                    <div class="widget-values__value">{{ day.activityPercent || 0 }}%</div>
-                </li>
-                <li>
-                    <div class="widget-values__label">Time</div>
-                    <div class="widget-values__value">{{ day.duration | time }} / {{ dynamicNormOfWorkingTime | time }}</div>
-                </li>
-                <li>
-                    <div class="widget-values__label">Norm of working time</div>
-                    <div class="widget-values__value">{{ normOfWorkingTime | time }}</div>
-                </li>
-            </ul>
-        </ng-container>
+        <button mat-icon-button class="ml-auto" (click)="picker.open()">
+            <mat-icon>today</mat-icon>
+        </button>
+    </mat-card-header>
 
-        <ng-template #loading>
-            <mat-card-subtitle>loading...</mat-card-subtitle>
-        </ng-template>
+    <ng-container *ngIf="!day.loading else loading">
+        <ul class="widget-values">
+            <li>
+                <div class="widget-values__label">Avg. Activity</div>
+                <div class="widget-values__value">{{ day.activityPercent || 0 }}%</div>
+            </li>
+            <li>
+                <div class="widget-values__label">Time</div>
+                <div class="widget-values__value">{{ day.duration | time }}
+                    / {{ dynamicNormOfWorkingTime | time }}</div>
+            </li>
+            <li>
+                <div class="widget-values__label">Norm of working time</div>
+                <div class="widget-values__value">{{ normOfWorkingTime | time }}</div>
+            </li>
+        </ul>
     </ng-container>
+
+    <ng-template #loading>
+        <mat-card-subtitle>loading...</mat-card-subtitle>
+    </ng-template>
 </mat-card>

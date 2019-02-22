@@ -15,6 +15,18 @@ body {
   box-sizing: border-box;
 }
 
+.ml-auto, .mx-auto  {
+  margin-left: auto !important;
+}
+
+.mr-auto, .mx-auto  {
+  margin-right: auto !important;
+}
+
+.m-auto {
+  margin: auto !important;
+}
+
 .widget-values {
   list-style: none;
   padding-left: 0;

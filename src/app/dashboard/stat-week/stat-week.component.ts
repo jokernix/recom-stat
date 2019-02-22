@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
-import { endOfWeek, startOfWeek } from 'date-fns';
+import { endOfWeek, isWeekend, startOfWeek } from 'date-fns';
 import { Observable } from 'rxjs';
 import { LoadPeriod, TypePeriod } from '../dates.actions';
 import { DatesState, DatesStateItemModel } from '../dates.state';
@@ -23,6 +23,7 @@ export class StatWeekComponent implements OnInit {
   // TODO add startDate and endDate to Store
   // TODO add holidays and working days
   // TODO add prev and next button
+  // TODO add avg. hours per day
   ngOnInit(): void {
     const secondsInDay = 8 * 60 * 60;
 
@@ -39,5 +40,10 @@ export class StatWeekComponent implements OnInit {
 
   getWeek(start: Date, end: Date) {
     this.store.dispatch(new LoadPeriod(TypePeriod.Week, start, end));
+  }
+
+  private calculateSeconds(prev: number, day: Date): number {
+    const secondsInDay = 8 * 60 * 60;
+    return isWeekend(day) ? prev : prev + secondsInDay;
   }
 }
