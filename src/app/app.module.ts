@@ -14,8 +14,6 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login.component';
 import { AuthState } from './auth/store/auth.state';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { DatesState } from './dashboard/dates.state';
-import { StatHalfComponent } from './dashboard/stat-half/stat-half.component';
 import { StatMonthComponent } from './dashboard/stat-month/stat-month.component';
 import { StatWeekComponent } from './dashboard/stat-week/stat-week.component';
 import { ApiPrefixInterceptor } from './interceptors/api-prefix.interceptor';
@@ -25,6 +23,8 @@ import { MaterialModule } from './material.module';
 import { TimePipe } from './services/time.pipe';
 import { WidgetDayState } from './widget-day/store/widget-day.state';
 import { WidgetDayComponent } from './widget-day/widget-day.component';
+import { WidgetWeekState } from './widget-week/store/widget-week.state';
+import { WidgetWeekComponent } from './widget-week/widget-week.component';
 
 @NgModule({
   declarations: [
@@ -33,9 +33,9 @@ import { WidgetDayComponent } from './widget-day/widget-day.component';
     DashboardComponent,
     TimePipe,
     StatWeekComponent,
-    StatHalfComponent,
     StatMonthComponent,
-    WidgetDayComponent
+    WidgetDayComponent,
+    WidgetWeekComponent
   ],
   imports: [
     BrowserModule,
@@ -43,7 +43,7 @@ import { WidgetDayComponent } from './widget-day/widget-day.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgxsModule.forRoot([AuthState, DatesState, WidgetDayState], {
+    NgxsModule.forRoot([AuthState, WidgetDayState, WidgetWeekState], {
       developmentMode: !environment.production
     }),
     NgxsStoragePluginModule.forRoot({
