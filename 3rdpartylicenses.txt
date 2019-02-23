@@ -371,7 +371,16 @@ MIT
 
 @angular/material/menu
 
+@angular/material/progress-spinner
+
 @angular/material/card
+
+@angular/forms
+MIT
+
+@angular/material/dialog
+
+@angular/material/datepicker
 
 @ngxs/store
 MIT
@@ -379,14 +388,12 @@ MIT
 @ngxs/router-plugin
 MIT
 
-@angular/forms
-MIT
-
 @angular/material/form-field
 
-@angular/material/tooltip
-
 @angular/material/sidenav
+
+@ngxs/storage-plugin
+MIT
 
 @ngxs/devtools-plugin
 MIT
