@@ -66,6 +66,7 @@ export class DatesState {
     { typePeriod, start, end }: LoadPeriod
   ) {
     patchState({ [typePeriod]: { loading: true } });
+
     return this.datesService.getPeriod(start, end).pipe(
       map(value =>
         dispatch(

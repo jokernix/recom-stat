@@ -1,0 +1,46 @@
+<mat-card *ngIf="day$ | async as day">
+    <mat-card-header>
+        <mat-card-title>Day</mat-card-title>
+        <mat-card-subtitle>{{ day.date | date }}</mat-card-subtitle>
+
+        <input matInput
+               style="width:1px;visibility:hidden;"
+               [matDatepicker]="picker"
+               [max]="today"
+               (dateChange)="changeDay($event)">
+        <mat-datepicker #picker [touchUi]="isHandset$ | async"></mat-datepicker>
+
+        <button mat-icon-button class="ml-auto" (click)="picker.open()">
+            <mat-icon>today</mat-icon>
+        </button>
+    </mat-card-header>
+
+    <ng-container *ngIf="!day.loading else loading">
+        <ul class="widget-values" *ngIf="day.duration else noData">
+            <li>
+                <div class="widget-values__label">Avg. Activity</div>
+                <div class="widget-values__value">{{ day.activityPercent || 0 }}%</div>
+            </li>
+            <li>
+                <div class="widget-values__label">Time</div>
+                <div class="widget-values__value">{{ day.duration | time }}</div>
+            </li>
+            <li>
+                <div class="widget-values__label">Norm of working time</div>
+                <div class="widget-values__value">{{ day.normOfWorkingTime | time }}</div>
+            </li>
+        </ul>
+
+
+    </ng-container>
+
+    <ng-template #loading>
+        <mat-progress-spinner class="m-auto" mode="indeterminate" diameter="80"></mat-progress-spinner>
+    </ng-template>
+
+    <ng-template #noData>
+        <h4 class="report-no-data mat-h4">
+            Nothing to report
+        </h4>
+    </ng-template>
+</mat-card>

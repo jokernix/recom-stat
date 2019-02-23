@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Store } from '@ngxs/store';
-import { Login } from './auth.actions';
+import { Login } from './store/auth.actions';
 
 @Component({
   selector: 'rec-login',

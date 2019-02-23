@@ -1,5 +1,12 @@
-import { NgModule } from '@angular/core';
-import { MatDatepickerModule, MatListModule, MatNativeDateModule } from '@angular/material';
+import { Injectable, NgModule } from '@angular/core';
+import {
+  DateAdapter,
+  MatDatepickerModule,
+  MatListModule,
+  MatNativeDateModule,
+  MatProgressSpinnerModule,
+  NativeDateAdapter
+} from '@angular/material';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -20,11 +27,20 @@ const materialModules = [
   MatToolbarModule,
   MatListModule,
   MatDatepickerModule,
-  MatNativeDateModule
+  MatNativeDateModule,
+  MatProgressSpinnerModule
 ];
+
+@Injectable()
+export class MyDateAdapter extends NativeDateAdapter {
+  getFirstDayOfWeek(): number {
+    return 1;
+  }
+}
 
 @NgModule({
   imports: [...materialModules],
-  exports: [...materialModules]
+  exports: [...materialModules],
+  providers: [{ provide: DateAdapter, useClass: MyDateAdapter }]
 })
 export class MaterialModule {}

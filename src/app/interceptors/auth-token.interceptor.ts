@@ -2,7 +2,7 @@ import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/c
 import { Injectable, Injector } from '@angular/core';
 import { Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
-import { AuthState } from '../auth/auth.state';
+import { AuthState } from '../auth/store/auth.state';
 
 @Injectable()
 export class AuthTokenInterceptor implements HttpInterceptor {

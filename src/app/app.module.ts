@@ -11,11 +11,10 @@ import { environment } from '../environments/environment';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { AuthState } from './auth/auth.state';
 import { LoginComponent } from './auth/login.component';
+import { AuthState } from './auth/store/auth.state';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { DatesState } from './dashboard/dates.state';
-import { StatDayComponent } from './dashboard/stat-day/stat-day.component';
 import { StatHalfComponent } from './dashboard/stat-half/stat-half.component';
 import { StatMonthComponent } from './dashboard/stat-month/stat-month.component';
 import { StatWeekComponent } from './dashboard/stat-week/stat-week.component';
@@ -24,6 +23,8 @@ import { AppTokenInterceptor } from './interceptors/app-token.interceptor';
 import { AuthTokenInterceptor } from './interceptors/auth-token.interceptor';
 import { MaterialModule } from './material.module';
 import { TimePipe } from './services/time.pipe';
+import { WidgetDayState } from './widget-day/store/widget-day.state';
+import { WidgetDayComponent } from './widget-day/widget-day.component';
 
 @NgModule({
   declarations: [
@@ -31,10 +32,10 @@ import { TimePipe } from './services/time.pipe';
     LoginComponent,
     DashboardComponent,
     TimePipe,
-    StatDayComponent,
     StatWeekComponent,
     StatHalfComponent,
-    StatMonthComponent
+    StatMonthComponent,
+    WidgetDayComponent
   ],
   imports: [
     BrowserModule,
@@ -42,7 +43,9 @@ import { TimePipe } from './services/time.pipe';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgxsModule.forRoot([AuthState, DatesState], { developmentMode: !environment.production }),
+    NgxsModule.forRoot([AuthState, DatesState, WidgetDayState], {
+      developmentMode: !environment.production
+    }),
     NgxsStoragePluginModule.forRoot({
       key: ['auth.user']
     }),

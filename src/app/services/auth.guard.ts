@@ -3,8 +3,8 @@ import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot } from '@angul
 import { Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { LoginRedirect } from '../auth/auth.actions';
-import { AuthState } from '../auth/auth.state';
+import { LoginRedirect } from '../auth/store/auth.actions';
+import { AuthState } from '../auth/store/auth.state';
 
 @Injectable({
   providedIn: 'root'

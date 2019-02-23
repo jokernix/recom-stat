@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 
-import { Logout } from '../auth/auth.actions';
-import { AuthState } from '../auth/auth.state';
-import { User } from '../models/user.model';
+import { Logout } from '../auth/store/auth.actions';
+import { AuthState } from '../auth/store/auth.state';
+import { UserWithToken } from '../models/user-with-token.model';
 
 @Component({
   selector: 'rec-dashboard',
@@ -12,7 +12,7 @@ import { User } from '../models/user.model';
   styleUrls: ['./dashboard.component.scss']
 })
 export class DashboardComponent {
-  @Select(AuthState.getUser) user$: Observable<User>;
+  @Select(AuthState.getUser) user$: Observable<UserWithToken>;
 
   constructor(private store: Store) {}
 
