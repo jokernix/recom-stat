@@ -11,7 +11,7 @@ import {
 } from './widget-month.actions';
 
 export interface WidgetMonthModel extends WidgetModel {
-  id: string; // [YEAR.NUMBER_OF_WEEK]
+  id: string; // [YEAR.MONTH]
   start: Date;
   end: Date;
   normOfWorkingTime?: number;

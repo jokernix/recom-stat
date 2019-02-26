@@ -1,7 +1,7 @@
-<mat-card *ngIf="week$ | async as week">
+<mat-card *ngIf="half$ | async as half">
   <mat-card-header>
-    <mat-card-title>Week</mat-card-title>
-    <mat-card-subtitle>{{ week.start | date }} - {{ week.end | date }}</mat-card-subtitle>
+    <mat-card-title>Half</mat-card-title>
+    <mat-card-subtitle>{{ half.start | date }} - {{ half.end | date }}</mat-card-subtitle>
 
     <input matInput
            style="width:1px;visibility:hidden;"
@@ -15,19 +15,19 @@
     </button>
   </mat-card-header>
 
-  <ng-container *ngIf="!week.loading else loading">
+  <ng-container *ngIf="!half.loading else loading">
     <ul class="widget-values">
       <li>
         <div class="widget-values__label">Avg. Activity</div>
-        <div class="widget-values__value">{{ week.activityPercent || 0 }}%</div>
+        <div class="widget-values__value">{{ half.activityPercent || 0 }}%</div>
       </li>
       <li>
         <div class="widget-values__label">Time</div>
-        <div class="widget-values__value">{{ week.duration | time }}</div>
-        <!--<div class="widget-values__value">{{ week.duration | time }} / {{ dynamicNormOfWorkingTime | time }}</div>-->
+        <div class="widget-values__value">{{ half.duration | time }}</div>
+        <!--<div class="widget-values__value">{{ half.duration | time }} / {{ dynamicNormOfWorkingTime | time }}</div>-->
       </li>
       <li>
-        <!--<div class="widget-values__label">Norm of working time</div>-->
+        <div class="widget-values__label">Norm of working time</div>
         <!--<div class="widget-values__value">{{ normOfWorkingTime | time }}</div>-->
       </li>
     </ul>

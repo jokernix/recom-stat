@@ -1,0 +1,129 @@
+import { Action, NgxsOnInit, Selector, State, StateContext } from '@ngxs/store';
+import {
+  addDays,
+  eachDay,
+  endOfDay,
+  endOfMonth,
+  isBefore,
+  isSameDay,
+  isWeekend,
+  startOfDay,
+  startOfMonth,
+  startOfToday
+} from 'date-fns';
+import { concatMap, switchMap } from 'rxjs/operators';
+import { LoadPeriod, TypePeriod } from '../../dashboard/dates.actions';
+import { WidgetModel } from '../../models/widget.model';
+import { DatesService } from '../../services/dates.service';
+import { isNotEmpty } from '../../utils/is-not-empty';
+import { GetCachedDataOfHalf, LoadDataOfHalf, SaveDataOfHalfToStore } from './widget-half.actions';
+
+export interface WidgetHalfModel extends WidgetModel {
+  id: string; // [YEAR.MONTH/HALF]
+  start: Date;
+  end: Date;
+  normOfWorkingTime?: number;
+  dynamicNormOfWorkingTime?: number;
+}
+
+export interface WidgetHalfStateModel {
+  items: { [key: string]: WidgetHalfModel };
+  selectedHalf: string;
+}
+
+@State<WidgetHalfStateModel>({
+  name: 'half',
+  defaults: { items: {}, selectedHalf: null }
+})
+export class WidgetHalfState implements NgxsOnInit {
+  @Selector()
+  static getHalf({ items, selectedHalf }: WidgetHalfStateModel): WidgetHalfModel {
+    return items[selectedHalf];
+  }
+
+  static generateKey(date: Date): string {
+    const isFirstHalf = WidgetHalfState.getPeriod(date)[1].getDay() < 16;
+    return `[${date.getFullYear()}.${date.getMonth()}/${isFirstHalf ? 1 : 2}]`;
+  }
+
+  static getPeriod(date: Date): Date[] {
+    let start: Date;
+    let end: Date;
+
+    const midMonth = startOfDay(date).setDate(15);
+
+    if (isBefore(date, midMonth) || isSameDay(date, midMonth)) {
+      start = startOfMonth(date);
+      end = endOfDay(midMonth);
+    } else {
+      start = startOfDay(addDays(midMonth, 1));
+      end = endOfMonth(date);
+    }
+
+    return [start, end];
+  }
+
+  constructor(private datesService: DatesService) {}
+
+  ngxsOnInit(ctx: StateContext<WidgetHalfStateModel>) {
+    ctx.dispatch(new LoadDataOfHalf(new Date()));
+  }
+
+  @Action(GetCachedDataOfHalf)
+  getCachedDataOfHalf(ctx: StateContext<WidgetHalfStateModel>, { date }: GetCachedDataOfHalf) {
+    const state = ctx.getState();
+    const key = WidgetHalfState.generateKey(date);
+    const half = state.items[key];
+
+    if (half) {
+      ctx.patchState({ selectedHalf: key });
+    }
+
+    return ctx.dispatch(new LoadDataOfHalf(date));
+  }
+
+  @Action(LoadDataOfHalf)
+  loadDataOfHalf(ctx: StateContext<WidgetHalfStateModel>, { date }: LoadDataOfHalf) {
+    const [start, end] = WidgetHalfState.getPeriod(date);
+    // this.normalTime = eachDay(this.startDate, this.endDate).reduce(this.calculateSeconds, 0);
+    // this.normalTimeToCurrentTime =
+    // eachDay(this.startDate, today).reduce(this.calculateSeconds, 0);
+
+    const widgetHalf: WidgetHalfModel = {
+      id: WidgetHalfState.generateKey(date),
+      start,
+      end,
+      loading: true
+    };
+
+    return ctx.dispatch(new SaveDataOfHalfToStore(widgetHalf)).pipe(
+      concatMap(() => this.datesService.getPeriod(widgetHalf.start, widgetHalf.end)),
+      switchMap(res => {
+        // const normOfWorkingTime = this.datesService.calculateNormOfWorkingTime(date);
+        const half = { ...widgetHalf, loading: false };
+
+        if (isNotEmpty(res)) {
+          half.activityPercent = res.activity_percent;
+          half.dates = res.dates;
+          half.duration = res.duration;
+        }
+
+        return ctx.dispatch(new SaveDataOfHalfToStore(half));
+      })
+    );
+  }
+
+  @Action(SaveDataOfHalfToStore)
+  saveDataOfHalfToStore(ctx: StateContext<WidgetHalfStateModel>, { value }: SaveDataOfHalfToStore) {
+    const state = ctx.getState();
+    ctx.setState({
+      items: { ...state.items, [value.id]: value },
+      selectedHalf: value.id
+    });
+  }
+}
+
+// private calculateSeconds(prev: number, day: Date): number {
+//   const secondsInDay = 8 * 60 * 60;
+//   return isWeekend(day) ? prev : prev + secondsInDay;
+// }

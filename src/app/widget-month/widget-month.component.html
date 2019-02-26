@@ -1,47 +1,47 @@
 <mat-card *ngIf="month$ | async as month">
-  <mat-card-header>
-    <mat-card-title>Month</mat-card-title>
-    <mat-card-subtitle>{{ month.start | date : 'MMMM' }}</mat-card-subtitle>
+    <mat-card-header>
+        <mat-card-title>Month</mat-card-title>
+        <mat-card-subtitle>{{ month.start | date : 'MMMM yyyyx' }}</mat-card-subtitle>
 
-    <input matInput
-           style="width:1px;visibility:hidden;"
-           [matDatepicker]="picker"
-           [max]="today">
-    <mat-datepicker #picker
-                    startView="year"
-                    [touchUi]="isHandset$ | async"
-                    (monthSelected)="chosenMonthHandler($event, picker)"></mat-datepicker>
+        <input matInput
+               style="width:1px;visibility:hidden;"
+               [matDatepicker]="picker"
+               [max]="today">
+        <mat-datepicker #picker
+                        startView="year"
+                        [touchUi]="isHandset$ | async"
+                        (monthSelected)="chosenMonthHandler($event, picker)"></mat-datepicker>
 
-    <button mat-icon-button class="ml-auto" (click)="picker.open()">
-      <mat-icon>today</mat-icon>
-    </button>
-  </mat-card-header>
+        <button mat-icon-button class="ml-auto" (click)="picker.open()">
+            <mat-icon>today</mat-icon>
+        </button>
+    </mat-card-header>
 
-  <ng-container *ngIf="!month.loading else loading">
-    <ul class="widget-values">
-      <li>
-        <div class="widget-values__label">Avg. Activity</div>
-        <div class="widget-values__value">{{ month.activityPercent || 0 }}%</div>
-      </li>
-      <li>
-        <div class="widget-values__label">Time</div>
-        <div class="widget-values__value">{{ month.duration | time }}</div>
-        <!--<div class="widget-values__value">{{ month.duration | time }} / {{ dynamicNormOfWorkingTime | time }}</div>-->
-      </li>
-      <li>
-        <div class="widget-values__label">Norm of working time</div>
-        <!--<div class="widget-values__value">{{ normOfWorkingTime | time }}</div>-->
-      </li>
-    </ul>
-  </ng-container>
+    <ng-container *ngIf="!month.loading else loading">
+        <ul class="widget-values">
+            <li>
+                <div class="widget-values__label">Avg. Activity</div>
+                <div class="widget-values__value">{{ month.activityPercent || 0 }}%</div>
+            </li>
+            <li>
+                <div class="widget-values__label">Time</div>
+                <div class="widget-values__value">{{ month.duration | time }}</div>
+                <!--<div class="widget-values__value">{{ month.duration | time }} / {{ dynamicNormOfWorkingTime | time }}</div>-->
+            </li>
+            <li>
+                <!--<div class="widget-values__label">Norm of working time</div>-->
+                <!--<div class="widget-values__value">{{ normOfWorkingTime | time }}</div>-->
+            </li>
+        </ul>
+    </ng-container>
 
-  <ng-template #loading>
-    <mat-progress-spinner class="m-auto" mode="indeterminate" diameter="80"></mat-progress-spinner>
-  </ng-template>
+    <ng-template #loading>
+        <mat-progress-spinner class="m-auto" mode="indeterminate" diameter="80"></mat-progress-spinner>
+    </ng-template>
 
-  <ng-template #noData>
-    <h4 class="report-no-data mat-h4">
-      Nothing to report
-    </h4>
-  </ng-template>
+    <ng-template #noData>
+        <h4 class="report-no-data mat-h4">
+            Nothing to report
+        </h4>
+    </ng-template>
 </mat-card>

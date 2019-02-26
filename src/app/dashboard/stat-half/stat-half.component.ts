@@ -16,11 +16,11 @@ import { Observable } from 'rxjs';
 import { LoadPeriod, TypePeriod } from '../dates.actions';
 import { DatesState, DatesStateItemModel } from '../dates.state';
 
-@Component({
-  selector: 'rec-stat-half',
-  templateUrl: './stat-half.component.html',
-  styleUrls: ['./stat-half.component.scss']
-})
+// @Component({
+//   selector: 'rec-stat-half',
+//   templateUrl: './stat-half.component.html',
+//   styleUrls: ['./stat-half.component.scss']
+// })
 export class StatHalfComponent implements OnInit {
   @Select(DatesState.getHalf) half$: Observable<DatesStateItemModel>;
 

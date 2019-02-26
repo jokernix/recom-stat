@@ -23,6 +23,8 @@ import { MaterialModule } from './material.module';
 import { TimePipe } from './services/time.pipe';
 import { WidgetDayState } from './widget-day/store/widget-day.state';
 import { WidgetDayComponent } from './widget-day/widget-day.component';
+import { WidgetHalfState } from './widget-half/store/widget-half.state';
+import { WidgetHalfComponent } from './widget-half/widget-half.component';
 import { WidgetMonthState } from './widget-month/store/widget-month.state';
 import { WidgetMonthComponent } from './widget-month/widget-month.component';
 import { WidgetWeekState } from './widget-week/store/widget-week.state';
@@ -38,7 +40,8 @@ import { WidgetWeekComponent } from './widget-week/widget-week.component';
     StatMonthComponent,
     WidgetDayComponent,
     WidgetWeekComponent,
-    WidgetMonthComponent
+    WidgetMonthComponent,
+    WidgetHalfComponent
   ],
   imports: [
     BrowserModule,
@@ -46,9 +49,12 @@ import { WidgetWeekComponent } from './widget-week/widget-week.component';
     FormsModule,
     ReactiveFormsModule,
     HttpClientModule,
-    NgxsModule.forRoot([AuthState, WidgetDayState, WidgetWeekState, WidgetMonthState], {
-      developmentMode: !environment.production
-    }),
+    NgxsModule.forRoot(
+      [AuthState, WidgetDayState, WidgetWeekState, WidgetMonthState, WidgetHalfState],
+      {
+        developmentMode: !environment.production
+      }
+    ),
     NgxsStoragePluginModule.forRoot({
       key: ['auth.user']
     }),

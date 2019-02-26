@@ -2,19 +2,18 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component } from '@angular/core';
 import { MatDatepickerInputEvent } from '@angular/material';
 import { Select, Store } from '@ngxs/store';
-import { startOfDay } from 'date-fns';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { GetCachedDataOfDay } from './store/widget-day.actions';
-import { WidgetDayModel, WidgetDayState } from './store/widget-day.state';
+import { GetCachedDataOfHalf } from './store/widget-half.actions';
+import { WidgetHalfModel, WidgetHalfState } from './store/widget-half.state';
 
 @Component({
-  selector: 'rec-widget-day',
-  templateUrl: './widget-day.component.html',
-  styleUrls: ['./widget-day.component.scss']
+  selector: 'rec-widget-half',
+  templateUrl: './widget-half.component.html',
+  styleUrls: ['./widget-half.component.scss']
 })
-export class WidgetDayComponent {
-  @Select(WidgetDayState.getDay) day$: Observable<WidgetDayModel>;
+export class WidgetHalfComponent {
+  @Select(WidgetHalfState.getHalf) half$: Observable<WidgetHalfModel>;
 
   today: Date = new Date();
 
@@ -25,6 +24,6 @@ export class WidgetDayComponent {
   constructor(private breakpointObserver: BreakpointObserver, private store: Store) {}
 
   changeDay({ value }: MatDatepickerInputEvent<Date>) {
-    this.store.dispatch(new GetCachedDataOfDay(startOfDay(value)));
+    this.store.dispatch(new GetCachedDataOfHalf(value));
   }
 }
