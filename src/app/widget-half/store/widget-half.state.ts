@@ -1,18 +1,15 @@
 import { Action, NgxsOnInit, Selector, State, StateContext } from '@ngxs/store';
 import {
   addDays,
-  eachDay,
   endOfDay,
   endOfMonth,
   isBefore,
   isSameDay,
-  isWeekend,
+  isWithinRange,
   startOfDay,
-  startOfMonth,
-  startOfToday
+  startOfMonth
 } from 'date-fns';
 import { concatMap, switchMap } from 'rxjs/operators';
-import { LoadPeriod, TypePeriod } from '../../dashboard/dates.actions';
 import { WidgetModel } from '../../models/widget.model';
 import { DatesService } from '../../services/dates.service';
 import { isNotEmpty } from '../../utils/is-not-empty';
@@ -99,8 +96,19 @@ export class WidgetHalfState implements NgxsOnInit {
     return ctx.dispatch(new SaveDataOfHalfToStore(widgetHalf)).pipe(
       concatMap(() => this.datesService.getPeriod(widgetHalf.start, widgetHalf.end)),
       switchMap(res => {
-        // const normOfWorkingTime = this.datesService.calculateNormOfWorkingTime(date);
-        const half = { ...widgetHalf, loading: false };
+        const normOfWorkingTime = this.datesService.calculateNormOfWorkingDays(
+          widgetHalf.start,
+          widgetHalf.end
+        );
+
+        const half = { ...widgetHalf, normOfWorkingTime, loading: false };
+
+        if (isWithinRange(new Date(), widgetHalf.start, widgetHalf.end)) {
+          half.dynamicNormOfWorkingTime = this.datesService.calculateNormOfWorkingDays(
+            widgetHalf.start,
+            new Date()
+          );
+        }
 
         if (isNotEmpty(res)) {
           half.activityPercent = res.activity_percent;

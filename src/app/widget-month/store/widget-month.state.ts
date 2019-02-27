@@ -1,5 +1,5 @@
 import { Action, NgxsOnInit, Selector, State, StateContext } from '@ngxs/store';
-import { endOfMonth, startOfMonth } from 'date-fns';
+import { endOfMonth, isWithinRange, startOfMonth } from 'date-fns';
 import { concatMap, switchMap } from 'rxjs/operators';
 import { WidgetModel } from '../../models/widget.model';
 import { DatesService } from '../../services/dates.service';
@@ -68,8 +68,19 @@ export class WidgetMonthState implements NgxsOnInit {
     return ctx.dispatch(new SaveDataOfMonthToStore(widgetMonth)).pipe(
       concatMap(() => this.datesService.getPeriod(widgetMonth.start, widgetMonth.end)),
       switchMap(res => {
-        // const normOfWorkingTime = this.datesService.calculateNormOfWorkingTime(date);
-        const month = { ...widgetMonth, loading: false };
+        const normOfWorkingTime = this.datesService.calculateNormOfWorkingDays(
+          widgetMonth.start,
+          widgetMonth.end
+        );
+
+        const month = { ...widgetMonth, normOfWorkingTime, loading: false };
+
+        if (isWithinRange(new Date(), widgetMonth.start, widgetMonth.end)) {
+          month.dynamicNormOfWorkingTime = this.datesService.calculateNormOfWorkingDays(
+            widgetMonth.start,
+            new Date()
+          );
+        }
 
         if (isNotEmpty(res)) {
           month.activityPercent = res.activity_percent;

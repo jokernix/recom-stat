@@ -1,5 +1,5 @@
 import { Action, NgxsOnInit, Selector, State, StateContext } from '@ngxs/store';
-import { endOfWeek, getISOWeek, startOfWeek } from 'date-fns';
+import { endOfWeek, getISOWeek, isWithinRange, startOfWeek } from 'date-fns';
 import { concatMap, switchMap } from 'rxjs/operators';
 import { WidgetModel } from '../../models/widget.model';
 import { DatesService } from '../../services/dates.service';
@@ -64,8 +64,19 @@ export class WidgetWeekState implements NgxsOnInit {
     return ctx.dispatch(new SaveDataOfWeekToStore(widgetWeek)).pipe(
       concatMap(() => this.datesService.getPeriod(widgetWeek.start, widgetWeek.end)),
       switchMap(res => {
-        // const normOfWorkingTime = this.datesService.calculateNormOfWorkingTime(date);
-        const week = { ...widgetWeek, loading: false };
+        const normOfWorkingTime = this.datesService.calculateNormOfWorkingDays(
+          widgetWeek.start,
+          widgetWeek.end
+        );
+
+        const week = { ...widgetWeek, normOfWorkingTime, loading: false };
+
+        if (isWithinRange(new Date(), widgetWeek.start, widgetWeek.end)) {
+          week.dynamicNormOfWorkingTime = this.datesService.calculateNormOfWorkingDays(
+            widgetWeek.start,
+            new Date()
+          );
+        }
 
         if (isNotEmpty(res)) {
           week.activityPercent = res.activity_percent;

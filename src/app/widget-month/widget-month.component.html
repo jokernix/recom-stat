@@ -1,7 +1,7 @@
 <mat-card *ngIf="month$ | async as month">
     <mat-card-header>
         <mat-card-title>Month</mat-card-title>
-        <mat-card-subtitle>{{ month.start | date : 'MMMM yyyyx' }}</mat-card-subtitle>
+        <mat-card-subtitle>{{ month.start | date : 'MMMM yyyy' }}</mat-card-subtitle>
 
         <input matInput
                style="width:1px;visibility:hidden;"
@@ -25,12 +25,12 @@
             </li>
             <li>
                 <div class="widget-values__label">Time</div>
-                <div class="widget-values__value">{{ month.duration | time }}</div>
-                <!--<div class="widget-values__value">{{ month.duration | time }} / {{ dynamicNormOfWorkingTime | time }}</div>-->
+                <div class="widget-values__value">{{ month.duration | time }} <span
+                        *ngIf="month.dynamicNormOfWorkingTime">/ {{ month.dynamicNormOfWorkingTime | time }}</span></div>
             </li>
             <li>
-                <!--<div class="widget-values__label">Norm of working time</div>-->
-                <!--<div class="widget-values__value">{{ normOfWorkingTime | time }}</div>-->
+                <div class="widget-values__label">Norm of working time</div>
+                <div class="widget-values__value">{{ month.normOfWorkingTime | time }}</div>
             </li>
         </ul>
     </ng-container>

@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { differenceInSeconds, isBefore, isToday } from 'date-fns';
+import { differenceInSeconds, eachDay, isBefore, isToday, isWeekend } from 'date-fns';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Organization } from '../models/organization.model';
@@ -49,9 +49,17 @@ export class DatesService {
     return secondsInDay;
   }
 
+  calculateNormOfWorkingDays(start: Date, end: Date): number {
+    return eachDay(start, end).reduce(this.calculateSeconds, 0);
+  }
+
   private setTime(date: Date, hour: number, minutes: number = 0, seconds: number = 0): Date {
     const d = new Date(date);
     d.setHours(hour, minutes, seconds);
     return d;
+  }
+
+  private calculateSeconds(prev: number, day: Date): number {
+    return isWeekend(day) ? prev : prev + secondsInDay;
   }
 }
