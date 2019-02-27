@@ -46,7 +46,7 @@ export class WidgetWeekState implements NgxsOnInit {
     const week = state.weeks[key];
 
     if (week) {
-      ctx.patchState({ selectedWeek: key });
+      return ctx.patchState({ selectedWeek: key });
     }
 
     return ctx.dispatch(new LoadDataOfWeek(date));

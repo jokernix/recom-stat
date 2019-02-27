@@ -50,7 +50,7 @@ export class WidgetMonthState implements NgxsOnInit {
     const month = state.months[key];
 
     if (month) {
-      ctx.patchState({ selectedMonth: key });
+      return ctx.patchState({ selectedMonth: key });
     }
 
     return ctx.dispatch(new LoadDataOfMonth(date));

@@ -73,7 +73,7 @@ export class WidgetHalfState implements NgxsOnInit {
     const half = state.items[key];
 
     if (half) {
-      ctx.patchState({ selectedHalf: key });
+      return ctx.patchState({ selectedHalf: key });
     }
 
     return ctx.dispatch(new LoadDataOfHalf(date));
@@ -82,9 +82,6 @@ export class WidgetHalfState implements NgxsOnInit {
   @Action(LoadDataOfHalf)
   loadDataOfHalf(ctx: StateContext<WidgetHalfStateModel>, { date }: LoadDataOfHalf) {
     const [start, end] = WidgetHalfState.getPeriod(date);
-    // this.normalTime = eachDay(this.startDate, this.endDate).reduce(this.calculateSeconds, 0);
-    // this.normalTimeToCurrentTime =
-    // eachDay(this.startDate, today).reduce(this.calculateSeconds, 0);
 
     const widgetHalf: WidgetHalfModel = {
       id: WidgetHalfState.generateKey(date),
@@ -130,8 +127,3 @@ export class WidgetHalfState implements NgxsOnInit {
     });
   }
 }
-
-// private calculateSeconds(prev: number, day: Date): number {
-//   const secondsInDay = 8 * 60 * 60;
-//   return isWeekend(day) ? prev : prev + secondsInDay;
-// }

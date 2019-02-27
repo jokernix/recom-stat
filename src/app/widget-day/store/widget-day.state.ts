@@ -43,7 +43,7 @@ export class WidgetDayState implements NgxsOnInit {
     const key = date.toISOString();
     const day = state.days[key];
     if (day) {
-      ctx.patchState({ selectedDay: key });
+      return ctx.patchState({ selectedDay: key });
     }
 
     return ctx.dispatch(new LoadDataOfDay(date));
