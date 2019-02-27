@@ -14,8 +14,6 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login.component';
 import { AuthState } from './auth/store/auth.state';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { StatMonthComponent } from './dashboard/stat-month/stat-month.component';
-import { StatWeekComponent } from './dashboard/stat-week/stat-week.component';
 import { ApiPrefixInterceptor } from './interceptors/api-prefix.interceptor';
 import { AppTokenInterceptor } from './interceptors/app-token.interceptor';
 import { AuthTokenInterceptor } from './interceptors/auth-token.interceptor';
@@ -36,8 +34,6 @@ import { WidgetWeekComponent } from './widget-week/widget-week.component';
     LoginComponent,
     DashboardComponent,
     TimePipe,
-    StatWeekComponent,
-    StatMonthComponent,
     WidgetDayComponent,
     WidgetWeekComponent,
     WidgetMonthComponent,
@@ -51,9 +47,7 @@ import { WidgetWeekComponent } from './widget-week/widget-week.component';
     HttpClientModule,
     NgxsModule.forRoot(
       [AuthState, WidgetDayState, WidgetWeekState, WidgetMonthState, WidgetHalfState],
-      {
-        developmentMode: !environment.production
-      }
+      { developmentMode: !environment.production }
     ),
     NgxsStoragePluginModule.forRoot({
       key: ['auth.user']
