@@ -14,3 +14,11 @@ export class SaveDataOfHalfToStore {
   public static readonly type = '[WidgetHalf] SaveDataOfHalfToStore';
   constructor(public value: WidgetHalfModel) {}
 }
+
+export class GetPrevHalf {
+  public static readonly type = '[WidgetHalf] GetPrevHalf';
+}
+
+export class GetNextHalf {
+  public static readonly type = '[WidgetHalf] GetNextHalf';
+}

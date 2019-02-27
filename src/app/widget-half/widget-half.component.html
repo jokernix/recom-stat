@@ -3,16 +3,14 @@
         <mat-card-title>Half</mat-card-title>
         <mat-card-subtitle>{{ half.start | date }} - {{ half.end | date }}</mat-card-subtitle>
 
-        <!--<input matInput-->
-        <!--style="width:1px;visibility:hidden;"-->
-        <!--[matDatepicker]="picker"-->
-        <!--[max]="today"-->
-        <!--(dateChange)="changeDay($event)">-->
-        <!--<mat-datepicker #picker [touchUi]="isHandset$ | async"></mat-datepicker>-->
-
-        <!--<button mat-icon-button class="ml-auto" (click)="picker.open()">-->
-        <!--<mat-icon>today</mat-icon>-->
-        <!--</button>-->
+        <div class="ml-auto">
+            <button mat-icon-button (click)="prevHalf()">
+                <mat-icon>keyboard_arrow_left</mat-icon>
+            </button>
+            <button mat-icon-button (click)="nextHalf()" [disabled]="isLastHalf">
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </button>
+        </div>
     </mat-card-header>
 
     <ng-container *ngIf="!half.loading else loading">

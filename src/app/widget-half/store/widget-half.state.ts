@@ -7,13 +7,20 @@ import {
   isSameDay,
   isWithinRange,
   startOfDay,
-  startOfMonth
+  startOfMonth,
+  subDays
 } from 'date-fns';
 import { concatMap, switchMap } from 'rxjs/operators';
 import { WidgetModel } from '../../models/widget.model';
 import { DatesService } from '../../services/dates.service';
 import { isNotEmpty } from '../../utils/is-not-empty';
-import { GetCachedDataOfHalf, LoadDataOfHalf, SaveDataOfHalfToStore } from './widget-half.actions';
+import {
+  GetCachedDataOfHalf,
+  GetNextHalf,
+  GetPrevHalf,
+  LoadDataOfHalf,
+  SaveDataOfHalfToStore
+} from './widget-half.actions';
 
 export interface WidgetHalfModel extends WidgetModel {
   id: string; // [YEAR.MONTH/HALF]
@@ -39,7 +46,7 @@ export class WidgetHalfState implements NgxsOnInit {
   }
 
   static generateKey(date: Date): string {
-    const isFirstHalf = WidgetHalfState.getPeriod(date)[1].getDay() < 16;
+    const isFirstHalf = WidgetHalfState.getPeriod(date)[1].getDate() < 16;
     return `[${date.getFullYear()}.${date.getMonth()}/${isFirstHalf ? 1 : 2}]`;
   }
 
@@ -77,6 +84,20 @@ export class WidgetHalfState implements NgxsOnInit {
     }
 
     return ctx.dispatch(new LoadDataOfHalf(date));
+  }
+
+  @Action(GetPrevHalf) getPrevHalf(ctx: StateContext<WidgetHalfStateModel>) {
+    const store = ctx.getState();
+    const current = store.items[store.selectedHalf];
+
+    return ctx.dispatch(new GetCachedDataOfHalf(subDays(current.start, 3)));
+  }
+
+  @Action(GetNextHalf) getNextHalf(ctx: StateContext<WidgetHalfStateModel>) {
+    const store = ctx.getState();
+    const current = store.items[store.selectedHalf];
+
+    return ctx.dispatch(new GetCachedDataOfHalf(addDays(current.end, 3)));
   }
 
   @Action(LoadDataOfHalf)

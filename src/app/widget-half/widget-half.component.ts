@@ -1,10 +1,9 @@
-import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { Component } from '@angular/core';
-import { MatDatepickerInputEvent } from '@angular/material';
+import { Component, OnInit } from '@angular/core';
 import { Select, Store } from '@ngxs/store';
+import { isWithinRange } from 'date-fns';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { GetCachedDataOfHalf } from './store/widget-half.actions';
+import { tap } from 'rxjs/operators';
+import { GetNextHalf, GetPrevHalf } from './store/widget-half.actions';
 import { WidgetHalfModel, WidgetHalfState } from './store/widget-half.state';
 
 @Component({
@@ -12,18 +11,25 @@ import { WidgetHalfModel, WidgetHalfState } from './store/widget-half.state';
   templateUrl: './widget-half.component.html',
   styleUrls: ['./widget-half.component.scss']
 })
-export class WidgetHalfComponent {
-  @Select(WidgetHalfState.getHalf) half$: Observable<WidgetHalfModel>;
+export class WidgetHalfComponent implements OnInit {
+  half$: Observable<WidgetHalfModel>;
+  isLastHalf: boolean;
 
-  today: Date = new Date();
+  constructor(private store: Store) {}
 
-  isHandset$: Observable<boolean> = this.breakpointObserver
-    .observe(Breakpoints.Handset)
-    .pipe(map(result => result.matches));
+  ngOnInit() {
+    this.half$ = this.store.select(WidgetHalfState.getHalf).pipe(
+      tap(data => {
+        this.isLastHalf = isWithinRange(new Date(), data.start, data.end);
+      })
+    );
+  }
 
-  constructor(private breakpointObserver: BreakpointObserver, private store: Store) {}
+  prevHalf() {
+    this.store.dispatch(new GetPrevHalf());
+  }
 
-  changeDay({ value }: MatDatepickerInputEvent<Date>) {
-    this.store.dispatch(new GetCachedDataOfHalf(value));
+  nextHalf() {
+    this.store.dispatch(new GetNextHalf());
   }
 }
