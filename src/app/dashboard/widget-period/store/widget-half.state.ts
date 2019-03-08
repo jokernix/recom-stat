@@ -124,6 +124,7 @@ export class WidgetHalfState implements NgxsOnInit {
           half.activityPercent = res.activity_percent;
           half.dates = res.dates;
           half.duration = res.duration;
+          half.avgHoursPerDay = Math.round(res.duration / res.dates.length);
         }
 
         return ctx.dispatch(new SaveDataOfHalfToStore(half));

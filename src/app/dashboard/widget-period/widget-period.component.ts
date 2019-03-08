@@ -53,7 +53,6 @@ export class WidgetPeriodComponent implements OnInit {
   filterCurrentWeek(d: Date): boolean {
     const currentWeek =
       this.type === 'week' && isSameWeek(this.startDateOfWeek, d, { weekStartsOn: 1 });
-    console.log('d', currentWeek, d);
     return !currentWeek;
   }
 

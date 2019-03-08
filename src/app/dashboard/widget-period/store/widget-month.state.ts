@@ -79,6 +79,7 @@ export class WidgetMonthState implements NgxsOnInit {
           month.activityPercent = res.activity_percent;
           month.dates = res.dates;
           month.duration = res.duration;
+          month.avgHoursPerDay = Math.round(res.duration / res.dates.length);
         }
 
         return ctx.dispatch(new SaveDataOfMonthToStore(month));
