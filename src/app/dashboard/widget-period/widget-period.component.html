@@ -1,0 +1,70 @@
+<mat-card *ngIf="period$ | async as period">
+    <mat-card-header>
+        <mat-card-title>{{ type | titlecase }}</mat-card-title>
+        <mat-card-subtitle [ngSwitch]="type">
+            <span *ngSwitchCase="'day'">{{ period.start | date }}</span>
+            <span *ngSwitchCase="'month'">{{ period.start | date : 'MMMM yyyy' }}</span>
+            <span *ngSwitchDefault>{{ period.start | date }} - {{ period.end | date }}</span>
+        </mat-card-subtitle>
+
+        <div class="ml-auto" *ngIf="type === 'half' else picker">
+            <button mat-icon-button (click)="prevHalf()">
+                <mat-icon>keyboard_arrow_left</mat-icon>
+            </button>
+            <button mat-icon-button (click)="nextHalf()" [disabled]="isLastHalf">
+                <mat-icon>keyboard_arrow_right</mat-icon>
+            </button>
+        </div>
+    </mat-card-header>
+
+    <mat-card-content *ngIf="!period.loading else loading">
+        <ul class="widget-values" *ngIf="period.duration else noData">
+            <li>
+                <div class="widget-values__label">Avg. Activity</div>
+                <div class="widget-values__value">{{ period.activityPercent || 0 }}%</div>
+            </li>
+            <li>
+                <div class="widget-values__label">Time</div>
+                <div class="widget-values__value">{{ period.duration | time }} <span
+                        *ngIf="period.dynamicNormOfWorkingTime">/ {{ period.dynamicNormOfWorkingTime | time }}</span>
+                </div>
+            </li>
+            <li>
+                <div class="widget-values__label">Norm of working time</div>
+                <div class="widget-values__value">{{ period.normOfWorkingTime | time }}</div>
+            </li>
+            <li *ngIf="period.avgHoursPerDay">
+                <div class="widget-values__label">Avg. hours per day</div>
+                <div class="widget-values__value">{{ period.avgHoursPerDay | time }}</div>
+            </li>
+        </ul>
+    </mat-card-content>
+</mat-card>
+
+<ng-template #picker>
+    <input matInput
+           style="width:1px;visibility:hidden;"
+           [matDatepicker]="datepicker"
+           [matDatepickerFilter]="filter"
+           [max]="today"
+           (dateChange)="changeDay($event)">
+
+    <mat-datepicker #datepicker
+                    [startView]="type === 'month' ? 'year' : 'month'"
+                    [touchUi]="isHandset$ | async"
+                    (monthSelected)="chosenMonthHandler($event, datepicker)"></mat-datepicker>
+
+    <button mat-icon-button class="ml-auto" (click)="datepicker.open()">
+        <mat-icon>today</mat-icon>
+    </button>
+</ng-template>
+
+<ng-template #loading>
+    <mat-progress-spinner class="m-auto" mode="indeterminate" diameter="80"></mat-progress-spinner>
+</ng-template>
+
+<ng-template #noData>
+    <h4 class="report-no-data mat-h4">
+        Nothing to report
+    </h4>
+</ng-template>

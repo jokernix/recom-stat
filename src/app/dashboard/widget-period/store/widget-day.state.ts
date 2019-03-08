@@ -1,33 +1,24 @@
 import { Action, NgxsOnInit, Selector, State, StateContext } from '@ngxs/store';
 import { startOfDay } from 'date-fns';
 import { concatMap, switchMap } from 'rxjs/operators';
-import { WidgetModel } from '../../models/widget.model';
-import { DatesService } from '../../services/dates.service';
-import { isNotEmpty } from '../../utils/is-not-empty';
+
+import { WidgetPeriod } from '../../../models/widget.model';
+import { DatesService } from '../../../services/dates.service';
+import { isNotEmpty } from '../../../utils/is-not-empty';
 import { GetCachedDataOfDay, LoadDataOfDay, SaveDataOfDayToStore } from './widget-day.actions';
 
-export interface WidgetDayModel extends WidgetModel {
-  date: Date;
-  normOfWorkingTime?: number;
-}
-
 export interface WidgetDayStateModel {
-  days: {
-    [key: string]: WidgetDayModel;
-  };
+  days: { [key: string]: WidgetPeriod };
   selectedDay: string;
 }
 
 @State<WidgetDayStateModel>({
   name: 'day',
-  defaults: {
-    days: {},
-    selectedDay: null
-  }
+  defaults: { days: {}, selectedDay: null }
 })
 export class WidgetDayState implements NgxsOnInit {
   @Selector()
-  static getDay({ days, selectedDay }: WidgetDayStateModel): WidgetDayModel {
+  static getDay({ days, selectedDay }: WidgetDayStateModel): WidgetPeriod {
     return days[selectedDay];
   }
 
@@ -51,7 +42,7 @@ export class WidgetDayState implements NgxsOnInit {
 
   @Action(LoadDataOfDay)
   loadDataOfDay(ctx: StateContext<WidgetDayStateModel>, { date }: LoadDataOfDay) {
-    const widgetDay: WidgetDayModel = { date, loading: true };
+    const widgetDay: WidgetPeriod = { id: null, start: date, end: null, loading: true };
 
     return ctx.dispatch(new SaveDataOfDayToStore(widgetDay)).pipe(
       concatMap(() => this.datesService.getPeriod(date, date)),
@@ -72,7 +63,7 @@ export class WidgetDayState implements NgxsOnInit {
 
   @Action(SaveDataOfDayToStore)
   saveDataOfDayToStore(ctx: StateContext<WidgetDayStateModel>, { value }: SaveDataOfDayToStore) {
-    const key = value.date.toISOString();
+    const key = value.start.toISOString();
     const state = ctx.getState();
     ctx.setState({
       days: { ...state.days, [key]: value },

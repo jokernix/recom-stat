@@ -1,4 +1,4 @@
-import { WidgetHalfModel } from './widget-half.state';
+import { WidgetPeriod } from '../../../models/widget.model';
 
 export class GetCachedDataOfHalf {
   public static readonly type = '[WidgetHalf] GetCachedDataOfHalf';
@@ -12,7 +12,7 @@ export class LoadDataOfHalf {
 
 export class SaveDataOfHalfToStore {
   public static readonly type = '[WidgetHalf] SaveDataOfHalfToStore';
-  constructor(public value: WidgetHalfModel) {}
+  constructor(public value: WidgetPeriod) {}
 }
 
 export class GetPrevHalf {

@@ -14,31 +14,19 @@ import { AppComponent } from './app.component';
 import { LoginComponent } from './auth/login.component';
 import { AuthState } from './auth/store/auth.state';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { WidgetDayState } from './dashboard/widget-period/store/widget-day.state';
+import { WidgetHalfState } from './dashboard/widget-period/store/widget-half.state';
+import { WidgetMonthState } from './dashboard/widget-period/store/widget-month.state';
+import { WidgetWeekState } from './dashboard/widget-period/store/widget-week.state';
+import { WidgetPeriodComponent } from './dashboard/widget-period/widget-period.component';
 import { ApiPrefixInterceptor } from './interceptors/api-prefix.interceptor';
 import { AppTokenInterceptor } from './interceptors/app-token.interceptor';
 import { AuthTokenInterceptor } from './interceptors/auth-token.interceptor';
 import { MaterialModule } from './material.module';
 import { TimePipe } from './services/time.pipe';
-import { WidgetDayState } from './widget-day/store/widget-day.state';
-import { WidgetDayComponent } from './widget-day/widget-day.component';
-import { WidgetHalfState } from './widget-half/store/widget-half.state';
-import { WidgetHalfComponent } from './widget-half/widget-half.component';
-import { WidgetMonthState } from './widget-month/store/widget-month.state';
-import { WidgetMonthComponent } from './widget-month/widget-month.component';
-import { WidgetWeekState } from './widget-week/store/widget-week.state';
-import { WidgetWeekComponent } from './widget-week/widget-week.component';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    LoginComponent,
-    DashboardComponent,
-    TimePipe,
-    WidgetDayComponent,
-    WidgetWeekComponent,
-    WidgetMonthComponent,
-    WidgetHalfComponent
-  ],
+  declarations: [AppComponent, LoginComponent, DashboardComponent, TimePipe, WidgetPeriodComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

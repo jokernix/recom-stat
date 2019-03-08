@@ -1,25 +1,18 @@
 import { Action, NgxsOnInit, Selector, State, StateContext } from '@ngxs/store';
 import { endOfMonth, isWithinRange, startOfMonth } from 'date-fns';
 import { concatMap, switchMap } from 'rxjs/operators';
-import { WidgetModel } from '../../models/widget.model';
-import { DatesService } from '../../services/dates.service';
-import { isNotEmpty } from '../../utils/is-not-empty';
+
+import { WidgetPeriod } from '../../../models/widget.model';
+import { DatesService } from '../../../services/dates.service';
+import { isNotEmpty } from '../../../utils/is-not-empty';
 import {
   GetCachedDataOfMonth,
   LoadDataOfMonth,
   SaveDataOfMonthToStore
 } from './widget-month.actions';
 
-export interface WidgetMonthModel extends WidgetModel {
-  id: string; // [YEAR.MONTH]
-  start: Date;
-  end: Date;
-  normOfWorkingTime?: number;
-  dynamicNormOfWorkingTime?: number;
-}
-
 export interface WidgetMonthStateModel {
-  months: { [key: string]: WidgetMonthModel };
+  months: { [key: string /* [YEAR.MONTH] */]: WidgetPeriod };
   selectedMonth: string;
 }
 
@@ -29,7 +22,7 @@ export interface WidgetMonthStateModel {
 })
 export class WidgetMonthState implements NgxsOnInit {
   @Selector()
-  static getMonth({ months, selectedMonth }: WidgetMonthStateModel): WidgetMonthModel {
+  static getMonth({ months, selectedMonth }: WidgetMonthStateModel): WidgetPeriod {
     return months[selectedMonth];
   }
 
@@ -58,7 +51,7 @@ export class WidgetMonthState implements NgxsOnInit {
 
   @Action(LoadDataOfMonth)
   loadDataOfMonth(ctx: StateContext<WidgetMonthStateModel>, { date }: LoadDataOfMonth) {
-    const widgetMonth: WidgetMonthModel = {
+    const widgetMonth: WidgetPeriod = {
       id: WidgetMonthState.generateKey(date),
       start: startOfMonth(date),
       end: endOfMonth(date),

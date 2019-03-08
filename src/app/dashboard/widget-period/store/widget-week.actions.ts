@@ -1,4 +1,4 @@
-import { WidgetWeekModel } from './widget-week.state';
+import { WidgetPeriod } from '../../../models/widget.model';
 
 export class GetCachedDataOfWeek {
   public static readonly type = '[WidgetWeek] GetCachedDataOfWeek';
@@ -12,5 +12,5 @@ export class LoadDataOfWeek {
 
 export class SaveDataOfWeekToStore {
   public static readonly type = '[WidgetWeek] SaveDataOfWeekToStore';
-  constructor(public value: WidgetWeekModel) {}
+  constructor(public value: WidgetPeriod) {}
 }

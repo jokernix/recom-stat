@@ -6,3 +6,12 @@ export interface WidgetModel {
   duration?: number;
   loading: boolean;
 }
+
+export interface WidgetPeriod extends WidgetModel {
+  id: string;
+  start: Date;
+  end: Date;
+  normOfWorkingTime?: number;
+  dynamicNormOfWorkingTime?: number;
+  avgHoursPerDay?: number;
+}

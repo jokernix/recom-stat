@@ -1,22 +1,14 @@
 import { Action, NgxsOnInit, Selector, State, StateContext } from '@ngxs/store';
 import { endOfWeek, getISOWeek, isWithinRange, startOfWeek } from 'date-fns';
 import { concatMap, switchMap } from 'rxjs/operators';
-import { WidgetModel } from '../../models/widget.model';
-import { DatesService } from '../../services/dates.service';
-import { isNotEmpty } from '../../utils/is-not-empty';
+
+import { WidgetPeriod } from '../../../models/widget.model';
+import { DatesService } from '../../../services/dates.service';
+import { isNotEmpty } from '../../../utils/is-not-empty';
 import { GetCachedDataOfWeek, LoadDataOfWeek, SaveDataOfWeekToStore } from './widget-week.actions';
 
-export interface WidgetWeekModel extends WidgetModel {
-  id: string; // [YEAR.NUMBER_OF_WEEK]
-  start: Date;
-  end: Date;
-  normOfWorkingTime?: number;
-  dynamicNormOfWorkingTime?: number;
-  avgHoursPerDay?: number;
-}
-
 export interface WidgetWeekStateModel {
-  weeks: { [key: string]: WidgetWeekModel };
+  weeks: { [key: string /* [YEAR.NUMBER_OF_WEEK] */]: WidgetPeriod };
   selectedWeek: string;
 }
 
@@ -26,7 +18,7 @@ export interface WidgetWeekStateModel {
 })
 export class WidgetWeekState implements NgxsOnInit {
   @Selector()
-  static getWeek({ weeks, selectedWeek }: WidgetWeekStateModel): WidgetWeekModel {
+  static getWeek({ weeks, selectedWeek }: WidgetWeekStateModel): WidgetPeriod {
     return weeks[selectedWeek];
   }
 
@@ -55,10 +47,10 @@ export class WidgetWeekState implements NgxsOnInit {
 
   @Action(LoadDataOfWeek)
   loadDataOfWeek(ctx: StateContext<WidgetWeekStateModel>, { date }: LoadDataOfWeek) {
-    const widgetWeek: WidgetWeekModel = {
+    const widgetWeek: WidgetPeriod = {
       id: WidgetWeekState.generateKey(date),
-      start: startOfWeek(date),
-      end: endOfWeek(date),
+      start: startOfWeek(date, { weekStartsOn: 1 }),
+      end: endOfWeek(date, { weekStartsOn: 1 }),
       loading: true
     };
 

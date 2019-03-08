@@ -11,9 +11,9 @@ import {
   subDays
 } from 'date-fns';
 import { concatMap, switchMap } from 'rxjs/operators';
-import { WidgetModel } from '../../models/widget.model';
-import { DatesService } from '../../services/dates.service';
-import { isNotEmpty } from '../../utils/is-not-empty';
+import { WidgetPeriod } from '../../../models/widget.model';
+import { DatesService } from '../../../services/dates.service';
+import { isNotEmpty } from '../../../utils/is-not-empty';
 import {
   GetCachedDataOfHalf,
   GetNextHalf,
@@ -22,16 +22,8 @@ import {
   SaveDataOfHalfToStore
 } from './widget-half.actions';
 
-export interface WidgetHalfModel extends WidgetModel {
-  id: string; // [YEAR.MONTH/HALF]
-  start: Date;
-  end: Date;
-  normOfWorkingTime?: number;
-  dynamicNormOfWorkingTime?: number;
-}
-
 export interface WidgetHalfStateModel {
-  items: { [key: string]: WidgetHalfModel };
+  items: { [key: string /* [YEAR.MONTH/HALF] */]: WidgetPeriod };
   selectedHalf: string;
 }
 
@@ -41,7 +33,7 @@ export interface WidgetHalfStateModel {
 })
 export class WidgetHalfState implements NgxsOnInit {
   @Selector()
-  static getHalf({ items, selectedHalf }: WidgetHalfStateModel): WidgetHalfModel {
+  static getHalf({ items, selectedHalf }: WidgetHalfStateModel): WidgetPeriod {
     return items[selectedHalf];
   }
 
@@ -104,7 +96,7 @@ export class WidgetHalfState implements NgxsOnInit {
   loadDataOfHalf(ctx: StateContext<WidgetHalfStateModel>, { date }: LoadDataOfHalf) {
     const [start, end] = WidgetHalfState.getPeriod(date);
 
-    const widgetHalf: WidgetHalfModel = {
+    const widgetHalf: WidgetPeriod = {
       id: WidgetHalfState.generateKey(date),
       start,
       end,
