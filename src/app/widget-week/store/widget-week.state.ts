@@ -12,6 +12,7 @@ export interface WidgetWeekModel extends WidgetModel {
   end: Date;
   normOfWorkingTime?: number;
   dynamicNormOfWorkingTime?: number;
+  avgHoursPerDay?: number;
 }
 
 export interface WidgetWeekStateModel {
@@ -82,6 +83,7 @@ export class WidgetWeekState implements NgxsOnInit {
           week.activityPercent = res.activity_percent;
           week.dates = res.dates;
           week.duration = res.duration;
+          week.avgHoursPerDay = Math.round(res.duration / res.dates.length);
         }
 
         return ctx.dispatch(new SaveDataOfWeekToStore(week));
