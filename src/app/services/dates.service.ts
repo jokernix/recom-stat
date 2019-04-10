@@ -1,6 +1,6 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { differenceInSeconds, eachDay, isBefore, isToday, isWeekend } from 'date-fns';
+import { differenceInSeconds, eachDay, isBefore, isSameDay, isToday, isWeekend } from 'date-fns';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Organization } from '../models/organization.model';
@@ -13,7 +13,13 @@ const secondsInDay = 8 * secondsInHour;
   providedIn: 'root'
 })
 export class DatesService {
-  constructor(private http: HttpClient) {}
+  holidays: Date[] = [];
+  workingDays: Date[] = [];
+
+  constructor(private http: HttpClient) {
+    this.getHolidays().subscribe(dates => (this.holidays = dates.map(day => new Date(day))));
+    this.getWorkingDays().subscribe(dates => (this.workingDays = dates.map(day => new Date(day))));
+  }
 
   getPeriod(startDate: Date, endDate: Date): Observable<UserWithDates> {
     let params = new HttpParams();
@@ -35,6 +41,14 @@ export class DatesService {
       );
   }
 
+  getHolidays() {
+    return this.http.get<string[]>('/assets/holidays.json');
+  }
+
+  getWorkingDays() {
+    return this.http.get<string[]>('/assets/working-days.json');
+  }
+
   calculateNormOfWorkingTime(date: Date): number {
     const startOfWorkingDay = this.setTime(date, 9);
     const endOfWorkingDay = this.setTime(date, 18);
@@ -50,7 +64,7 @@ export class DatesService {
   }
 
   calculateNormOfWorkingDays(start: Date, end: Date): number {
-    return eachDay(start, end).reduce(this.calculateSeconds, 0);
+    return eachDay(start, end).reduce(this.calculateSeconds.bind(this), 0);
   }
 
   private setTime(date: Date, hour: number, minutes: number = 0, seconds: number = 0): Date {
@@ -60,6 +74,15 @@ export class DatesService {
   }
 
   private calculateSeconds(prev: number, day: Date): number {
-    return isWeekend(day) ? prev : prev + secondsInDay;
+    return this.dayIsWeekend(day) ? prev : prev + secondsInDay;
+  }
+
+  private dayIsWeekend(day): boolean {
+    // return isWeekend(day);
+    if (isWeekend(day)) {
+      return !this.workingDays.some(date => isSameDay(date, day));
+    }
+
+    return this.holidays.some(date => isSameDay(date, day));
   }
 }
