@@ -22,7 +22,7 @@
     "max-line-length": [ true, 100],
     "max-classes-per-file": false,
     "member-access": false,
-    "no-attribute-parameter-decorator": true,
+    "no-attribute-decorator": true,
     "no-console": [ true, "time", "timeEnd", "trace" ],
     "no-empty": false,
     "no-input-rename": true,
@@ -35,10 +35,10 @@
     "ordered-imports": false,
     "quotemark": [ true, "single", "avoid-escape" ],
     "trailing-comma": [ false, {"multiline": "always", "singleline": "never"} ],
-    "use-host-property-decorator": true,
-    "use-input-property-decorator": true,
-    "use-life-cycle-interface": true,
-    "use-output-property-decorator": true,
+    "no-host-metadata-property": true,
+    "no-inputs-metadata-property": true,
+    "use-lifecycle-interface": true,
+    "no-outputs-metadata-property": true,
     "use-pipe-transform-interface": true,
     "variable-name": [ true, "allow-leading-underscore", "allow-pascal-case", "ban-keywords", "check-format" ]
   }
