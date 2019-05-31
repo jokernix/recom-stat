@@ -1,6 +1,6 @@
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, Input, OnInit } from '@angular/core';
-import { MatDatepicker, MatDatepickerInputEvent } from '@angular/material';
+import { MatDatepicker, MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { Store } from '@ngxs/store';
 import { isSameWeek, isWithinRange } from 'date-fns';
 import { Observable } from 'rxjs';
