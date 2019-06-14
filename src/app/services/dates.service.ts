@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Organization } from '../models/organization.model';
 import { UserWithDates } from '../models/user-with-dates.model';
+import { holidays, workingDays } from '../models/working-days';
 
 const secondsInHour = 60 * 60;
 const secondsInDay = 8 * secondsInHour;
@@ -17,8 +18,8 @@ export class DatesService {
   workingDays: Date[] = [];
 
   constructor(private http: HttpClient) {
-    this.getHolidays().subscribe(dates => (this.holidays = dates.map(day => new Date(day))));
-    this.getWorkingDays().subscribe(dates => (this.workingDays = dates.map(day => new Date(day))));
+    this.holidays = holidays.map(day => new Date(day));
+    this.workingDays = workingDays.map(day => new Date(day));
   }
 
   getPeriod(startDate: Date, endDate: Date): Observable<UserWithDates> {
@@ -39,14 +40,6 @@ export class DatesService {
         map(res => (res.organizations.length ? res.organizations[0] : { users: [] })),
         map(org => org.users[0])
       );
-  }
-
-  getHolidays() {
-    return this.http.get<string[]>('/assets/holidays.json');
-  }
-
-  getWorkingDays() {
-    return this.http.get<string[]>('/assets/working-days.json');
   }
 
   calculateNormOfWorkingTime(date: Date): number {
