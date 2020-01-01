@@ -71,7 +71,6 @@ export class DatesService {
   }
 
   private dayIsWeekend(day): boolean {
-    // return isWeekend(day);
     if (isWeekend(day)) {
       return !this.workingDays.some(date => isSameDay(date, day));
     }

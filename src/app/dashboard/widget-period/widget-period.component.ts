@@ -34,7 +34,7 @@ export class WidgetPeriodComponent implements OnInit {
   isLastHalf: boolean;
   startDateOfWeek: Date;
 
-  filter: (d: Date) => {};
+  filter: (d: Date) => boolean;
 
   constructor(private breakpointObserver: BreakpointObserver, private store: Store) {
     this.filter = this.filterCurrentWeek.bind(this);
