@@ -13,6 +13,7 @@ import {
   Logout,
   LogoutSuccess
 } from './auth.actions';
+import { Injectable } from '@angular/core';
 
 export interface AuthStateModel {
   user: UserWithToken;
@@ -24,6 +25,7 @@ export interface AuthStateModel {
     user: null
   }
 })
+@Injectable()
 export class AuthState {
   @Selector()
   static getToken(state: AuthStateModel): string {

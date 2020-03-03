@@ -5,7 +5,7 @@ import {
   endOfMonth,
   isBefore,
   isSameDay,
-  isWithinRange,
+  isWithinInterval,
   startOfDay,
   startOfMonth,
   subDays
@@ -21,6 +21,7 @@ import {
   LoadDataOfHalf,
   SaveDataOfHalfToStore
 } from './widget-half.actions';
+import { Injectable } from '@angular/core';
 
 export interface WidgetHalfStateModel {
   items: { [key: string /* [YEAR.MONTH/HALF] */]: WidgetPeriod };
@@ -31,6 +32,7 @@ export interface WidgetHalfStateModel {
   name: 'half',
   defaults: { items: {}, selectedHalf: null }
 })
+@Injectable()
 export class WidgetHalfState implements NgxsOnInit {
   @Selector()
   static getHalf({ items, selectedHalf }: WidgetHalfStateModel): WidgetPeriod {
@@ -113,7 +115,7 @@ export class WidgetHalfState implements NgxsOnInit {
 
         const half = { ...widgetHalf, normOfWorkingTime, loading: false };
 
-        if (isWithinRange(new Date(), widgetHalf.start, widgetHalf.end)) {
+        if (isWithinInterval(new Date(), { start: widgetHalf.start, end: widgetHalf.end })) {
           half.dynamicNormOfWorkingTime = this.datesService.calculateNormOfWorkingDays(
             widgetHalf.start,
             new Date()

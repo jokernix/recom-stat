@@ -2,7 +2,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { Component, Input, OnInit } from '@angular/core';
 import { MatDatepicker, MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { Store } from '@ngxs/store';
-import { isSameWeek, isWithinRange } from 'date-fns';
+import { isSameWeek, isWithinInterval } from 'date-fns';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
@@ -43,7 +43,9 @@ export class WidgetPeriodComponent implements OnInit {
   ngOnInit() {
     this.period$ = this.store.select(this.getSelector()).pipe(
       tap(data => {
-        if (this.type === 'half') this.isLastHalf = isWithinRange(new Date(), data.start, data.end);
+        if (this.type === 'half') {
+          this.isLastHalf = isWithinInterval(new Date(), { start: data.start, end: data.end });
+        }
 
         if (this.type === 'week') this.startDateOfWeek = data.start;
       })

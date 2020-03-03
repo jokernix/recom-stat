@@ -1,11 +1,12 @@
 import { Action, NgxsOnInit, Selector, State, StateContext } from '@ngxs/store';
-import { endOfWeek, getISOWeek, isWithinRange, startOfWeek } from 'date-fns';
+import { endOfWeek, getISOWeek, isWithinInterval, startOfWeek } from 'date-fns';
 import { concatMap, switchMap } from 'rxjs/operators';
 
 import { WidgetPeriod } from '../../../models/widget.model';
 import { DatesService } from '../../../services/dates.service';
 import { isNotEmpty } from '../../../utils/is-not-empty';
 import { GetCachedDataOfWeek, LoadDataOfWeek, SaveDataOfWeekToStore } from './widget-week.actions';
+import { Injectable } from '@angular/core';
 
 export interface WidgetWeekStateModel {
   weeks: { [key: string /* [YEAR.NUMBER_OF_WEEK] */]: WidgetPeriod };
@@ -16,6 +17,7 @@ export interface WidgetWeekStateModel {
   name: 'week',
   defaults: { weeks: {}, selectedWeek: null }
 })
+@Injectable()
 export class WidgetWeekState implements NgxsOnInit {
   @Selector()
   static getWeek({ weeks, selectedWeek }: WidgetWeekStateModel): WidgetPeriod {
@@ -64,7 +66,7 @@ export class WidgetWeekState implements NgxsOnInit {
 
         const week = { ...widgetWeek, normOfWorkingTime, loading: false };
 
-        if (isWithinRange(new Date(), widgetWeek.start, widgetWeek.end)) {
+        if (isWithinInterval(new Date(), { start: widgetWeek.start, end: widgetWeek.end })) {
           week.dynamicNormOfWorkingTime = this.datesService.calculateNormOfWorkingDays(
             widgetWeek.start,
             new Date()

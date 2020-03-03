@@ -6,6 +6,7 @@ import { WidgetPeriod } from '../../../models/widget.model';
 import { DatesService } from '../../../services/dates.service';
 import { isNotEmpty } from '../../../utils/is-not-empty';
 import { GetCachedDataOfDay, LoadDataOfDay, SaveDataOfDayToStore } from './widget-day.actions';
+import { Injectable } from '@angular/core';
 
 export interface WidgetDayStateModel {
   days: { [key: string]: WidgetPeriod };
@@ -16,6 +17,7 @@ export interface WidgetDayStateModel {
   name: 'day',
   defaults: { days: {}, selectedDay: null }
 })
+@Injectable()
 export class WidgetDayState implements NgxsOnInit {
   @Selector()
   static getDay({ days, selectedDay }: WidgetDayStateModel): WidgetPeriod {

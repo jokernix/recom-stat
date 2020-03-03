@@ -1,5 +1,5 @@
 import { Action, NgxsOnInit, Selector, State, StateContext } from '@ngxs/store';
-import { endOfMonth, isWithinRange, startOfMonth } from 'date-fns';
+import { endOfMonth, isWithinInterval, startOfMonth } from 'date-fns';
 import { concatMap, switchMap } from 'rxjs/operators';
 
 import { WidgetPeriod } from '../../../models/widget.model';
@@ -10,6 +10,7 @@ import {
   LoadDataOfMonth,
   SaveDataOfMonthToStore
 } from './widget-month.actions';
+import { Injectable } from '@angular/core';
 
 export interface WidgetMonthStateModel {
   months: { [key: string /* [YEAR.MONTH] */]: WidgetPeriod };
@@ -20,6 +21,7 @@ export interface WidgetMonthStateModel {
   name: 'month',
   defaults: { months: {}, selectedMonth: null }
 })
+@Injectable()
 export class WidgetMonthState implements NgxsOnInit {
   @Selector()
   static getMonth({ months, selectedMonth }: WidgetMonthStateModel): WidgetPeriod {
@@ -68,7 +70,7 @@ export class WidgetMonthState implements NgxsOnInit {
 
         const month = { ...widgetMonth, normOfWorkingTime, loading: false };
 
-        if (isWithinRange(new Date(), widgetMonth.start, widgetMonth.end)) {
+        if (isWithinInterval(new Date(), { start: widgetMonth.start, end: widgetMonth.end })) {
           month.dynamicNormOfWorkingTime = this.datesService.calculateNormOfWorkingDays(
             widgetMonth.start,
             new Date()
