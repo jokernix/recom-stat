@@ -1,4 +1,4 @@
-import { WidgetPeriod } from '../../../models/widget.model';
+import { WidgetPeriod } from '../../../core/models/widget.model';
 
 export class GetCachedDataOfWeek {
   public static readonly type = '[WidgetWeek] GetCachedDataOfWeek';

@@ -1,3 +1,4 @@
+import { Injectable } from '@angular/core';
 import { Action, NgxsOnInit, Selector, State, StateContext } from '@ngxs/store';
 import {
   addDays,
@@ -11,9 +12,9 @@ import {
   subDays
 } from 'date-fns';
 import { concatMap, switchMap } from 'rxjs/operators';
-import { WidgetPeriod } from '../../../models/widget.model';
-import { DatesService } from '../../../services/dates.service';
-import { isNotEmpty } from '../../../utils/is-not-empty';
+import { WidgetPeriod } from '../../../core/models/widget.model';
+import { DatesService } from '../../../core/services/dates.service';
+import { isNotEmpty } from '../../../core/utils/is-not-empty';
 import {
   GetCachedDataOfHalf,
   GetNextHalf,
@@ -21,7 +22,6 @@ import {
   LoadDataOfHalf,
   SaveDataOfHalfToStore
 } from './widget-half.actions';
-import { Injectable } from '@angular/core';
 
 export interface WidgetHalfStateModel {
   items: { [key: string /* [YEAR.MONTH/HALF] */]: WidgetPeriod };
@@ -64,7 +64,7 @@ export class WidgetHalfState implements NgxsOnInit {
   constructor(private datesService: DatesService) {}
 
   ngxsOnInit(ctx: StateContext<WidgetHalfStateModel>) {
-    ctx.dispatch(new LoadDataOfHalf(new Date()));
+    // ctx.dispatch(new LoadDataOfHalf(new Date()));
   }
 
   @Action(GetCachedDataOfHalf)

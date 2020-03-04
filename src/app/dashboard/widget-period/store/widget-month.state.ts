@@ -1,16 +1,16 @@
+import { Injectable } from '@angular/core';
 import { Action, NgxsOnInit, Selector, State, StateContext } from '@ngxs/store';
 import { endOfMonth, isWithinInterval, startOfMonth } from 'date-fns';
 import { concatMap, switchMap } from 'rxjs/operators';
 
-import { WidgetPeriod } from '../../../models/widget.model';
-import { DatesService } from '../../../services/dates.service';
-import { isNotEmpty } from '../../../utils/is-not-empty';
+import { WidgetPeriod } from '../../../core/models/widget.model';
+import { DatesService } from '../../../core/services/dates.service';
+import { isNotEmpty } from '../../../core/utils/is-not-empty';
 import {
   GetCachedDataOfMonth,
   LoadDataOfMonth,
   SaveDataOfMonthToStore
 } from './widget-month.actions';
-import { Injectable } from '@angular/core';
 
 export interface WidgetMonthStateModel {
   months: { [key: string /* [YEAR.MONTH] */]: WidgetPeriod };
@@ -35,7 +35,7 @@ export class WidgetMonthState implements NgxsOnInit {
   constructor(private datesService: DatesService) {}
 
   ngxsOnInit(ctx: StateContext<WidgetMonthStateModel>) {
-    ctx.dispatch(new LoadDataOfMonth(new Date()));
+    // ctx.dispatch(new LoadDataOfMonth(new Date()));
   }
 
   @Action(GetCachedDataOfMonth)

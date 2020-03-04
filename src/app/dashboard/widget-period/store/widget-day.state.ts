@@ -1,12 +1,11 @@
+import { Injectable } from '@angular/core';
 import { Action, NgxsOnInit, Selector, State, StateContext } from '@ngxs/store';
-import { startOfDay } from 'date-fns';
 import { concatMap, switchMap } from 'rxjs/operators';
 
-import { WidgetPeriod } from '../../../models/widget.model';
-import { DatesService } from '../../../services/dates.service';
-import { isNotEmpty } from '../../../utils/is-not-empty';
+import { WidgetPeriod } from '../../../core/models/widget.model';
+import { DatesService } from '../../../core/services/dates.service';
+import { isNotEmpty } from '../../../core/utils/is-not-empty';
 import { GetCachedDataOfDay, LoadDataOfDay, SaveDataOfDayToStore } from './widget-day.actions';
-import { Injectable } from '@angular/core';
 
 export interface WidgetDayStateModel {
   days: { [key: string]: WidgetPeriod };
@@ -27,7 +26,7 @@ export class WidgetDayState implements NgxsOnInit {
   constructor(private datesService: DatesService) {}
 
   ngxsOnInit(ctx: StateContext<WidgetDayStateModel>) {
-    ctx.dispatch(new LoadDataOfDay(startOfDay(new Date())));
+    //   ctx.dispatch(new LoadDataOfDay(startOfDay(new Date())));
   }
 
   @Action(GetCachedDataOfDay)

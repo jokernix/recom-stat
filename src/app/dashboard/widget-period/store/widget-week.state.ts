@@ -1,12 +1,12 @@
+import { Injectable } from '@angular/core';
 import { Action, NgxsOnInit, Selector, State, StateContext } from '@ngxs/store';
 import { endOfWeek, getISOWeek, isWithinInterval, startOfWeek } from 'date-fns';
 import { concatMap, switchMap } from 'rxjs/operators';
 
-import { WidgetPeriod } from '../../../models/widget.model';
-import { DatesService } from '../../../services/dates.service';
-import { isNotEmpty } from '../../../utils/is-not-empty';
+import { WidgetPeriod } from '../../../core/models/widget.model';
+import { DatesService } from '../../../core/services/dates.service';
+import { isNotEmpty } from '../../../core/utils/is-not-empty';
 import { GetCachedDataOfWeek, LoadDataOfWeek, SaveDataOfWeekToStore } from './widget-week.actions';
-import { Injectable } from '@angular/core';
 
 export interface WidgetWeekStateModel {
   weeks: { [key: string /* [YEAR.NUMBER_OF_WEEK] */]: WidgetPeriod };
@@ -31,7 +31,7 @@ export class WidgetWeekState implements NgxsOnInit {
   constructor(private datesService: DatesService) {}
 
   ngxsOnInit(ctx: StateContext<WidgetWeekStateModel>) {
-    ctx.dispatch(new LoadDataOfWeek(new Date()));
+    // ctx.dispatch(new LoadDataOfWeek(new Date()));
   }
 
   @Action(GetCachedDataOfWeek)

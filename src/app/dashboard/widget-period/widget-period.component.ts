@@ -6,7 +6,7 @@ import { isSameWeek, isWithinInterval } from 'date-fns';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
-import { WidgetPeriod } from '../../models/widget.model';
+import { WidgetPeriod } from '../../core/models/widget.model';
 import { GetCachedDataOfDay } from './store/widget-day.actions';
 import { WidgetDayState } from './store/widget-day.state';
 import { GetNextHalf, GetPrevHalf } from './store/widget-half.actions';

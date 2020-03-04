@@ -1,4 +1,4 @@
-import { UserWithToken } from '../../models/user-with-token.model';
+import { UserWithToken } from '../../core/models/user-with-token.model';
 
 export class Login {
   static type = '[Auth] Login';

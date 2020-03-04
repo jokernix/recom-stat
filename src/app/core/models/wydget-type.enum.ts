@@ -1,4 +1,4 @@
-export enum TypeOfCard {
+export enum WidgetTypes {
   Day = 'day',
   Week = 'week',
   Half = 'half',

@@ -1,10 +1,11 @@
-import { Navigate } from '@ngxs/router-plugin';
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
 import { of } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 
-import { UserWithToken } from '../../models/user-with-token.model';
-import { AuthService } from '../../services/auth.service';
+import { UserWithToken } from '../../core/models/user-with-token.model';
+import { AuthService } from '../../core/services/auth.service';
 import {
   Login,
   LoginFailed,
@@ -13,7 +14,6 @@ import {
   Logout,
   LogoutSuccess
 } from './auth.actions';
-import { Injectable } from '@angular/core';
 
 export interface AuthStateModel {
   user: UserWithToken;
@@ -37,7 +37,7 @@ export class AuthState {
     return state.user;
   }
 
-  constructor(private store: Store, private authService: AuthService) {}
+  constructor(private store: Store, private authService: AuthService, private router: Router) {}
 
   @Action(Login)
   login(ctx: StateContext<AuthStateModel>, { email, password }: Login) {
@@ -56,8 +56,8 @@ export class AuthState {
   }
 
   @Action(LoginSuccess)
-  onLoginSuccess(ctx: StateContext<AuthStateModel>) {
-    ctx.dispatch(new Navigate(['/']));
+  onLoginSuccess() {
+    this.router.navigate(['/dashboard']);
   }
 
   @Action(LoginSuccess)
@@ -67,12 +67,12 @@ export class AuthState {
 
   @Action([LoginFailed, LogoutSuccess])
   setUserStateOnFailure(ctx: StateContext<AuthStateModel>) {
-    ctx.patchState({ user: undefined });
+    ctx.setState({ user: null });
     ctx.dispatch(new LoginRedirect());
   }
 
   @Action(LoginRedirect)
-  onLoginRedirect(ctx: StateContext<AuthStateModel>) {
-    ctx.dispatch(new Navigate(['/login']));
+  onLoginRedirect() {
+    this.router.navigate(['/login']);
   }
 }

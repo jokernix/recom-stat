@@ -1,68 +1,41 @@
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MatSidenavModule } from '@angular/material/sidenav';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
-import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
+import { RouterModule, Routes } from '@angular/router';
+import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { NgxsModule } from '@ngxs/store';
-import { environment } from '../environments/environment';
 
-import { AppRoutingModule } from './app-routing.module';
+import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
+import { AuthModule } from './auth';
 import { LoginComponent } from './auth/login.component';
-import { AuthState } from './auth/store/auth.state';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { WidgetDayState } from './dashboard/widget-period/store/widget-day.state';
-import { WidgetHalfState } from './dashboard/widget-period/store/widget-half.state';
-import { WidgetMonthState } from './dashboard/widget-period/store/widget-month.state';
-import { WidgetWeekState } from './dashboard/widget-period/store/widget-week.state';
-import { WidgetPeriodComponent } from './dashboard/widget-period/widget-period.component';
-import { ApiPrefixInterceptor } from './interceptors/api-prefix.interceptor';
-import { AppTokenInterceptor } from './interceptors/app-token.interceptor';
-import { AuthTokenInterceptor } from './interceptors/auth-token.interceptor';
-import { MaterialModule } from './material.module';
-import { TimePipe } from './services/time.pipe';
+import { CoreModule } from './core/core.module';
+import { AuthGuard } from './core/services/auth.guard';
+
+const routes: Routes = [
+  { path: 'login', component: LoginComponent },
+  {
+    path: 'dashboard',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./dashboard').then(m => m.DashboardModule)
+  },
+  { path: '', redirectTo: '/dashboard', pathMatch: 'full' }
+];
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, DashboardComponent, TimePipe, WidgetPeriodComponent],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
-    NgxsModule.forRoot(
-      [AuthState, WidgetDayState, WidgetWeekState, WidgetMonthState, WidgetHalfState],
-      { developmentMode: !environment.production }
-    ),
-    NgxsStoragePluginModule.forRoot({
-      key: ['auth.user']
-    }),
-    NgxsRouterPluginModule.forRoot(),
-    NgxsReduxDevtoolsPluginModule.forRoot({
-      disabled: environment.production
-    }),
-    AppRoutingModule,
-    MaterialModule
-  ],
-  providers: [
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: ApiPrefixInterceptor,
-      multi: true
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AppTokenInterceptor,
-      multi: true
-    },
-    {
-      provide: HTTP_INTERCEPTORS,
-      useClass: AuthTokenInterceptor,
-      multi: true
-    }
+    RouterModule.forRoot(routes),
+    MatSidenavModule,
+    NgxsModule.forRoot([], { developmentMode: !environment.production }),
+    NgxsLoggerPluginModule.forRoot({ collapsed: true }),
+    NgxsStoragePluginModule.forRoot({ key: ['auth.user'] }),
+    CoreModule,
+    AuthModule
   ],
   bootstrap: [AppComponent]
 })

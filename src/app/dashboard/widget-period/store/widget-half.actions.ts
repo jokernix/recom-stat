@@ -1,4 +1,4 @@
-import { WidgetPeriod } from '../../../models/widget.model';
+import { WidgetPeriod } from '../../../core/models/widget.model';
 
 export class GetCachedDataOfHalf {
   public static readonly type = '[WidgetHalf] GetCachedDataOfHalf';
