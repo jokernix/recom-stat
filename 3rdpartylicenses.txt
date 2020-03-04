@@ -91,9 +91,6 @@ MIT
 @angular/router
 MIT
 
-@ngxs/logger-plugin
-MIT
-
 @ngxs/storage-plugin
 MIT
 
