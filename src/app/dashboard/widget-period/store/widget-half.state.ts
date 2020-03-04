@@ -1,18 +1,17 @@
 import { Injectable } from '@angular/core';
-import { Action, NgxsOnInit, Selector, State, StateContext } from '@ngxs/store';
+import { Action, Selector, State, StateContext } from '@ngxs/store';
 import {
   addDays,
   endOfDay,
   endOfMonth,
   isBefore,
   isSameDay,
-  isWithinInterval,
   startOfDay,
   startOfMonth,
   subDays
 } from 'date-fns';
 import { concatMap, switchMap } from 'rxjs/operators';
-import { WidgetPeriod } from '../../../core/models/widget.model';
+import { Widget, WidgetPeriod } from '../../../core/models/widget.model';
 import { DatesService } from '../../../core/services/dates.service';
 import { isNotEmpty } from '../../../core/utils/is-not-empty';
 import {
@@ -24,19 +23,19 @@ import {
 } from './widget-half.actions';
 
 export interface WidgetHalfStateModel {
-  items: { [key: string /* [YEAR.MONTH/HALF] */]: WidgetPeriod };
+  items: Map<string, WidgetPeriod> /* key = [YEAR.MONTH/HALF] */;
   selectedHalf: string;
 }
 
 @State<WidgetHalfStateModel>({
   name: 'half',
-  defaults: { items: {}, selectedHalf: null }
+  defaults: { items: new Map<string, WidgetPeriod>(), selectedHalf: null }
 })
 @Injectable()
-export class WidgetHalfState implements NgxsOnInit {
+export class WidgetHalfState {
   @Selector()
   static getHalf({ items, selectedHalf }: WidgetHalfStateModel): WidgetPeriod {
-    return items[selectedHalf];
+    return items.get(selectedHalf);
   }
 
   static generateKey(date: Date): string {
@@ -63,17 +62,12 @@ export class WidgetHalfState implements NgxsOnInit {
 
   constructor(private datesService: DatesService) {}
 
-  ngxsOnInit(ctx: StateContext<WidgetHalfStateModel>) {
-    // ctx.dispatch(new LoadDataOfHalf(new Date()));
-  }
-
   @Action(GetCachedDataOfHalf)
   getCachedDataOfHalf(ctx: StateContext<WidgetHalfStateModel>, { date }: GetCachedDataOfHalf) {
     const state = ctx.getState();
     const key = WidgetHalfState.generateKey(date);
-    const half = state.items[key];
 
-    if (half) {
+    if (state.items.has(key)) {
       return ctx.patchState({ selectedHalf: key });
     }
 
@@ -82,14 +76,14 @@ export class WidgetHalfState implements NgxsOnInit {
 
   @Action(GetPrevHalf) getPrevHalf(ctx: StateContext<WidgetHalfStateModel>) {
     const store = ctx.getState();
-    const current = store.items[store.selectedHalf];
+    const current = store.items.get(store.selectedHalf);
 
     return ctx.dispatch(new GetCachedDataOfHalf(subDays(current.start, 3)));
   }
 
   @Action(GetNextHalf) getNextHalf(ctx: StateContext<WidgetHalfStateModel>) {
     const store = ctx.getState();
-    const current = store.items[store.selectedHalf];
+    const current = store.items.get(store.selectedHalf);
 
     return ctx.dispatch(new GetCachedDataOfHalf(addDays(current.end, 3)));
   }
@@ -98,38 +92,21 @@ export class WidgetHalfState implements NgxsOnInit {
   loadDataOfHalf(ctx: StateContext<WidgetHalfStateModel>, { date }: LoadDataOfHalf) {
     const [start, end] = WidgetHalfState.getPeriod(date);
 
-    const widgetHalf: WidgetPeriod = {
-      id: WidgetHalfState.generateKey(date),
-      start,
-      end,
-      loading: true
-    };
+    const widgetHalf: Widget = new Widget(WidgetHalfState.generateKey(date), start, end);
 
     return ctx.dispatch(new SaveDataOfHalfToStore(widgetHalf)).pipe(
       concatMap(() => this.datesService.getPeriod(widgetHalf.start, widgetHalf.end)),
       switchMap(res => {
-        const normOfWorkingTime = this.datesService.calculateNormOfWorkingDays(
-          widgetHalf.start,
-          widgetHalf.end
-        );
-
-        const half = { ...widgetHalf, normOfWorkingTime, loading: false };
-
-        if (isWithinInterval(new Date(), { start: widgetHalf.start, end: widgetHalf.end })) {
-          half.dynamicNormOfWorkingTime = this.datesService.calculateNormOfWorkingDays(
-            widgetHalf.start,
-            new Date()
-          );
-        }
+        widgetHalf.loading = false;
 
         if (isNotEmpty(res)) {
-          half.activityPercent = res.activity_percent;
-          half.dates = res.dates;
-          half.duration = res.duration;
-          half.avgHoursPerDay = Math.round(res.duration / res.dates.length);
+          widgetHalf.activityPercent = res.activity_percent;
+          widgetHalf.dates = res.dates;
+          widgetHalf.duration = res.duration;
+          widgetHalf.avgHoursPerDay = Math.round(res.duration / res.dates.length);
         }
 
-        return ctx.dispatch(new SaveDataOfHalfToStore(half));
+        return ctx.dispatch(new SaveDataOfHalfToStore(widgetHalf));
       })
     );
   }
@@ -137,9 +114,10 @@ export class WidgetHalfState implements NgxsOnInit {
   @Action(SaveDataOfHalfToStore)
   saveDataOfHalfToStore(ctx: StateContext<WidgetHalfStateModel>, { value }: SaveDataOfHalfToStore) {
     const state = ctx.getState();
-    ctx.setState({
-      items: { ...state.items, [value.id]: value },
-      selectedHalf: value.id
-    });
+    const items = new Map(state.items);
+
+    items.set(value.id, value);
+
+    ctx.setState({ items, selectedHalf: value.id });
   }
 }

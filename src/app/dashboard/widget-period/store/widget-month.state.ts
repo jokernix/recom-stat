@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Action, NgxsOnInit, Selector, State, StateContext } from '@ngxs/store';
-import { endOfMonth, isWithinInterval, startOfMonth } from 'date-fns';
+import { Action, Selector, State, StateContext } from '@ngxs/store';
+import { endOfMonth, startOfMonth } from 'date-fns';
 import { concatMap, switchMap } from 'rxjs/operators';
 
-import { WidgetPeriod } from '../../../core/models/widget.model';
+import { Widget, WidgetPeriod } from '../../../core/models/widget.model';
 import { DatesService } from '../../../core/services/dates.service';
 import { isNotEmpty } from '../../../core/utils/is-not-empty';
 import {
@@ -13,19 +13,19 @@ import {
 } from './widget-month.actions';
 
 export interface WidgetMonthStateModel {
-  months: { [key: string /* [YEAR.MONTH] */]: WidgetPeriod };
+  months: Map<string, WidgetPeriod> /* key = [YEAR.MONTH] */;
   selectedMonth: string;
 }
 
 @State<WidgetMonthStateModel>({
   name: 'month',
-  defaults: { months: {}, selectedMonth: null }
+  defaults: { months: new Map(), selectedMonth: null }
 })
 @Injectable()
-export class WidgetMonthState implements NgxsOnInit {
+export class WidgetMonthState {
   @Selector()
   static getMonth({ months, selectedMonth }: WidgetMonthStateModel): WidgetPeriod {
-    return months[selectedMonth];
+    return months.get(selectedMonth);
   }
 
   static generateKey(date: Date): string {
@@ -34,17 +34,12 @@ export class WidgetMonthState implements NgxsOnInit {
 
   constructor(private datesService: DatesService) {}
 
-  ngxsOnInit(ctx: StateContext<WidgetMonthStateModel>) {
-    // ctx.dispatch(new LoadDataOfMonth(new Date()));
-  }
-
   @Action(GetCachedDataOfMonth)
   getCachedDataOfMonth(ctx: StateContext<WidgetMonthStateModel>, { date }: GetCachedDataOfMonth) {
     const state = ctx.getState();
     const key = WidgetMonthState.generateKey(date);
-    const month = state.months[key];
 
-    if (month) {
+    if (state.months.has(key)) {
       return ctx.patchState({ selectedMonth: key });
     }
 
@@ -53,38 +48,25 @@ export class WidgetMonthState implements NgxsOnInit {
 
   @Action(LoadDataOfMonth)
   loadDataOfMonth(ctx: StateContext<WidgetMonthStateModel>, { date }: LoadDataOfMonth) {
-    const widgetMonth: WidgetPeriod = {
-      id: WidgetMonthState.generateKey(date),
-      start: startOfMonth(date),
-      end: endOfMonth(date),
-      loading: true
-    };
+    const widgetMonth: Widget = new Widget(
+      WidgetMonthState.generateKey(date),
+      startOfMonth(date),
+      endOfMonth(date)
+    );
 
     return ctx.dispatch(new SaveDataOfMonthToStore(widgetMonth)).pipe(
       concatMap(() => this.datesService.getPeriod(widgetMonth.start, widgetMonth.end)),
       switchMap(res => {
-        const normOfWorkingTime = this.datesService.calculateNormOfWorkingDays(
-          widgetMonth.start,
-          widgetMonth.end
-        );
-
-        const month = { ...widgetMonth, normOfWorkingTime, loading: false };
-
-        if (isWithinInterval(new Date(), { start: widgetMonth.start, end: widgetMonth.end })) {
-          month.dynamicNormOfWorkingTime = this.datesService.calculateNormOfWorkingDays(
-            widgetMonth.start,
-            new Date()
-          );
-        }
+        widgetMonth.loading = false;
 
         if (isNotEmpty(res)) {
-          month.activityPercent = res.activity_percent;
-          month.dates = res.dates;
-          month.duration = res.duration;
-          month.avgHoursPerDay = Math.round(res.duration / res.dates.length);
+          widgetMonth.activityPercent = res.activity_percent;
+          widgetMonth.dates = res.dates;
+          widgetMonth.duration = res.duration;
+          widgetMonth.avgHoursPerDay = Math.round(res.duration / res.dates.length);
         }
 
-        return ctx.dispatch(new SaveDataOfMonthToStore(month));
+        return ctx.dispatch(new SaveDataOfMonthToStore(widgetMonth));
       })
     );
   }
@@ -95,9 +77,10 @@ export class WidgetMonthState implements NgxsOnInit {
     { value }: SaveDataOfMonthToStore
   ) {
     const state = ctx.getState();
-    ctx.setState({
-      months: { ...state.months, [value.id]: value },
-      selectedMonth: value.id
-    });
+    const months = new Map(state.months);
+
+    months.set(value.id, value);
+
+    ctx.setState({ months, selectedMonth: value.id });
   }
 }

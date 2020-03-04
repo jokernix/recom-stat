@@ -46,11 +46,11 @@ export class WidgetPeriodComponent implements OnInit {
   ngOnInit() {
     this.period$ = this.store.select(this.getSelector()).pipe(
       tap(data => {
-        if (this.type === 'half') {
+        if (this.type === WidgetTypes.Half) {
           this.isLastHalf = isWithinInterval(new Date(), { start: data.start, end: data.end });
         }
 
-        if (this.type === 'week') this.startDateOfWeek = data.start;
+        if (this.type === WidgetTypes.Week) this.startDateOfWeek = data.start;
       })
     );
   }

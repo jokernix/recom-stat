@@ -43,8 +43,8 @@
                 </div>
             </li>
             <li *ngIf="type !== types.Day">
-                <div class="widget-values__label" *ngIf="!period.loading; else loading">Avg. hours per day</div>
-                <div class="widget-values__value">
+                <div class="widget-values__label">Avg. hours per day</div>
+                <div class="widget-values__value" *ngIf="!period.loading; else loading">
                     <ng-container *ngIf="period.avgHoursPerDay; else noData">
                         {{ period.avgHoursPerDay | time }}
                     </ng-container>
@@ -82,7 +82,5 @@
 </ng-template>
 
 <ng-template #noData>
-    <h4 class="report-no-data mat-h4">
-        Nothing to report
-    </h4>
+    ---
 </ng-template>
