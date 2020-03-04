@@ -3,7 +3,11 @@
 //@import '~@angular/material/prebuilt-themes/pink-bluegrey.css';
 @import '~@angular/material/prebuilt-themes/purple-green.css';
 
-html, body, mat-sidenav-container {
+$grey: #ababab;
+
+html,
+body,
+mat-sidenav-container {
   height: 100%;
 }
 
@@ -15,21 +19,18 @@ body {
   box-sizing: border-box;
 }
 
-.ml-auto, .mx-auto  {
+.ml-auto,
+.mx-auto {
   margin-left: auto !important;
 }
 
-.mr-auto, .mx-auto  {
+.mr-auto,
+.mx-auto {
   margin-right: auto !important;
 }
 
 .m-auto {
   margin: auto !important;
-}
-
-.report-no-data {
-  text-align: center;
-  padding: 2rem;
 }
 
 .widget-values {
@@ -44,7 +45,42 @@ body {
     font-size: 11px;
   }
   &__value {
+    margin-top: 4px;
     font-size: 24px;
     font-weight: 300;
+  }
+}
+
+.loading-block {
+  display: block;
+  width: 60%;
+  height: 28px;
+  min-width: 100px;
+  border-radius: 4px;
+
+  -webkit-animation: blink 2s linear infinite;
+  animation: blink 2s linear infinite;
+}
+
+@-webkit-keyframes blink {
+  0% {
+    background-color: transparentize($grey, 0.5);
+  }
+  50% {
+    background-color: transparentize($grey, 0.25);
+  }
+  100% {
+    background-color: transparentize($grey, 0.5);
+  }
+}
+@keyframes blink {
+  0% {
+    background-color: transparentize($grey, 0.5);
+  }
+  50% {
+    background-color: transparentize($grey, 0.25);
+  }
+  100% {
+    background-color: transparentize($grey, 0.5);
   }
 }

@@ -2,12 +2,12 @@
     <mat-card-header>
         <mat-card-title>{{ type | titlecase }}</mat-card-title>
         <mat-card-subtitle [ngSwitch]="type">
-            <span *ngSwitchCase="'day'">{{ period.start | date }}</span>
-            <span *ngSwitchCase="'month'">{{ period.start | date : 'MMMM yyyy' }}</span>
+            <span *ngSwitchCase="types.Day">{{ period.start | date }}</span>
+            <span *ngSwitchCase="types.Month">{{ period.start | date: 'MMMM yyyy' }}</span>
             <span *ngSwitchDefault>{{ period.start | date }} - {{ period.end | date }}</span>
         </mat-card-subtitle>
 
-        <div class="ml-auto" *ngIf="type === 'half' else picker">
+        <div class="ml-auto" *ngIf="type === types.Half; else picker">
             <button mat-icon-button (click)="prevHalf()">
                 <mat-icon>keyboard_arrow_left</mat-icon>
             </button>
@@ -17,25 +17,38 @@
         </div>
     </mat-card-header>
 
-    <mat-card-content *ngIf="!period.loading else loading">
-        <ul class="widget-values" *ngIf="period.duration else noData">
+    <mat-card-content>
+        <ul class="widget-values">
             <li>
                 <div class="widget-values__label">Avg. Activity</div>
-                <div class="widget-values__value">{{ period.activityPercent || 0 }}%</div>
+                <div class="widget-values__value" *ngIf="!period.loading; else loading">
+                    <ng-container *ngIf="period.activityPercent; else noData">
+                        {{ period.activityPercent || 0 }}%
+                    </ng-container>
+                </div>
             </li>
             <li>
                 <div class="widget-values__label">Time</div>
-                <div class="widget-values__value">{{ period.duration | time }} <span
-                        *ngIf="period.dynamicNormOfWorkingTime">/ {{ period.dynamicNormOfWorkingTime | time }}</span>
+                <div class="widget-values__value" *ngIf="!period.loading; else loading">
+                    <ng-container *ngIf="period.duration; else noData">
+                        {{ period.duration | time }}
+                    </ng-container>
                 </div>
             </li>
             <li>
                 <div class="widget-values__label">Norm of working time</div>
-                <div class="widget-values__value">{{ period.normOfWorkingTime | time }}</div>
+                <div class="widget-values__value">
+                    <span *ngIf="period.dynamicNormOfWorkingTime">{{ period.dynamicNormOfWorkingTime | time }} / </span>
+                    {{ period.normOfWorkingTime | time }}
+                </div>
             </li>
-            <li *ngIf="period.avgHoursPerDay">
-                <div class="widget-values__label">Avg. hours per day</div>
-                <div class="widget-values__value">{{ period.avgHoursPerDay | time }}</div>
+            <li *ngIf="type !== types.Day">
+                <div class="widget-values__label" *ngIf="!period.loading; else loading">Avg. hours per day</div>
+                <div class="widget-values__value">
+                    <ng-container *ngIf="period.avgHoursPerDay; else noData">
+                        {{ period.avgHoursPerDay | time }}
+                    </ng-container>
+                </div>
             </li>
         </ul>
     </mat-card-content>
@@ -43,17 +56,21 @@
 
 <ng-template #picker>
     <!-- TODO add style for selected month-->
-    <input matInput
-           style="width:1px;visibility:hidden;"
-           [matDatepicker]="datepicker"
-           [matDatepickerFilter]="filter"
-           [max]="today"
-           (dateChange)="changeDay($event)">
+    <input
+        matInput
+        style="width:1px;visibility:hidden;"
+        [matDatepicker]="datepicker"
+        [matDatepickerFilter]="filter"
+        [max]="today"
+        (dateChange)="changeDay($event)"
+    />
 
-    <mat-datepicker #datepicker
-                    [startView]="type === 'month' ? 'year' : 'month'"
-                    [touchUi]="isHandset$ | async"
-                    (monthSelected)="chosenMonthHandler($event, datepicker)"></mat-datepicker>
+    <mat-datepicker
+        #datepicker
+        [startView]="type === types.Month ? 'year' : 'month'"
+        [touchUi]="isHandset$ | async"
+        (monthSelected)="chosenMonthHandler($event, datepicker)"
+    ></mat-datepicker>
 
     <button mat-icon-button class="ml-auto" (click)="datepicker.open()">
         <mat-icon>today</mat-icon>
@@ -61,7 +78,7 @@
 </ng-template>
 
 <ng-template #loading>
-    <mat-progress-spinner class="m-auto" mode="indeterminate" diameter="80"></mat-progress-spinner>
+    <div class="widget-values__value loading-block"></div>
 </ng-template>
 
 <ng-template #noData>

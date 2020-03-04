@@ -1,40 +1,35 @@
 import { Injectable } from '@angular/core';
-import { Action, NgxsOnInit, Selector, State, StateContext } from '@ngxs/store';
+import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { concatMap, switchMap } from 'rxjs/operators';
 
-import { WidgetPeriod } from '../../../core/models/widget.model';
+import { Widget, WidgetPeriod } from '../../../core/models/widget.model';
 import { DatesService } from '../../../core/services/dates.service';
 import { isNotEmpty } from '../../../core/utils/is-not-empty';
 import { GetCachedDataOfDay, LoadDataOfDay, SaveDataOfDayToStore } from './widget-day.actions';
 
 export interface WidgetDayStateModel {
-  days: { [key: string]: WidgetPeriod };
+  days: Map<string, WidgetPeriod>;
   selectedDay: string;
 }
 
 @State<WidgetDayStateModel>({
   name: 'day',
-  defaults: { days: {}, selectedDay: null }
+  defaults: { days: new Map<string, WidgetPeriod>(), selectedDay: null }
 })
 @Injectable()
-export class WidgetDayState implements NgxsOnInit {
+export class WidgetDayState {
   @Selector()
   static getDay({ days, selectedDay }: WidgetDayStateModel): WidgetPeriod {
-    return days[selectedDay];
+    return days.get(selectedDay);
   }
 
   constructor(private datesService: DatesService) {}
-
-  ngxsOnInit(ctx: StateContext<WidgetDayStateModel>) {
-    //   ctx.dispatch(new LoadDataOfDay(startOfDay(new Date())));
-  }
 
   @Action(GetCachedDataOfDay)
   getDataOfDay(ctx: StateContext<WidgetDayStateModel>, { date }: GetCachedDataOfDay) {
     const state = ctx.getState();
     const key = date.toISOString();
-    const day = state.days[key];
-    if (day) {
+    if (state.days.has(key)) {
       return ctx.patchState({ selectedDay: key });
     }
 
@@ -43,32 +38,32 @@ export class WidgetDayState implements NgxsOnInit {
 
   @Action(LoadDataOfDay)
   loadDataOfDay(ctx: StateContext<WidgetDayStateModel>, { date }: LoadDataOfDay) {
-    const widgetDay: WidgetPeriod = { id: null, start: date, end: null, loading: true };
+    const widgetDay: Widget = new Widget(null, date, null);
 
     return ctx.dispatch(new SaveDataOfDayToStore(widgetDay)).pipe(
       concatMap(() => this.datesService.getPeriod(date, date)),
       switchMap(res => {
-        const normOfWorkingTime = this.datesService.calculateNormOfWorkingTime(date);
-        const day = { ...widgetDay, normOfWorkingTime, loading: false };
+        widgetDay.loading = false;
 
         if (isNotEmpty(res)) {
-          day.activityPercent = res.activity_percent;
-          day.dates = res.dates;
-          day.duration = res.duration;
+          widgetDay.activityPercent = res.activity_percent;
+          widgetDay.dates = res.dates;
+          widgetDay.duration = res.duration;
         }
 
-        return ctx.dispatch(new SaveDataOfDayToStore(day));
+        return ctx.dispatch(new SaveDataOfDayToStore(widgetDay));
       })
     );
   }
 
   @Action(SaveDataOfDayToStore)
   saveDataOfDayToStore(ctx: StateContext<WidgetDayStateModel>, { value }: SaveDataOfDayToStore) {
-    const key = value.start.toISOString();
     const state = ctx.getState();
-    ctx.setState({
-      days: { ...state.days, [key]: value },
-      selectedDay: key
-    });
+    const days = new Map(state.days);
+
+    const selectedDay = value.start.toISOString();
+    days.set(selectedDay, value);
+
+    ctx.setState({ days, selectedDay });
   }
 }

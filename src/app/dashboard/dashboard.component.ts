@@ -8,9 +8,6 @@ import { AuthState } from '../auth/store/auth.state';
 import { UserWithToken } from '../core/models/user-with-token.model';
 import { WidgetTypes } from '../core/models/wydget-type.enum';
 import { LoadDataOfDay } from './widget-period/store/widget-day.actions';
-import { LoadDataOfHalf } from './widget-period/store/widget-half.actions';
-import { LoadDataOfMonth } from './widget-period/store/widget-month.actions';
-import { LoadDataOfWeek } from './widget-period/store/widget-week.actions';
 
 @Component({
   selector: 'rec-dashboard',
@@ -25,10 +22,10 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit(): void {
     this.store.dispatch([
-      new LoadDataOfDay(startOfDay(new Date())),
-      new LoadDataOfHalf(new Date()),
-      new LoadDataOfMonth(new Date()),
-      new LoadDataOfWeek(new Date())
+      new LoadDataOfDay(startOfDay(new Date()))
+      // new LoadDataOfHalf(new Date()),
+      // new LoadDataOfMonth(new Date()),
+      // new LoadDataOfWeek(new Date())
     ]);
   }
 

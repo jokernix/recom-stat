@@ -7,6 +7,7 @@ import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 import { WidgetPeriod } from '../../core/models/widget.model';
+import { WidgetTypes } from '../../core/models/wydget-type.enum';
 import { GetCachedDataOfDay } from './store/widget-day.actions';
 import { WidgetDayState } from './store/widget-day.state';
 import { GetNextHalf, GetPrevHalf } from './store/widget-half.actions';
@@ -22,7 +23,9 @@ import { WidgetWeekState } from './store/widget-week.state';
   styleUrls: ['./widget-period.component.scss']
 })
 export class WidgetPeriodComponent implements OnInit {
-  @Input() type: 'day' | 'week' | 'half' | 'month' = 'day';
+  @Input() type: WidgetTypes = WidgetTypes.Day;
+
+  types = WidgetTypes;
 
   period$: Observable<WidgetPeriod>;
   today: Date = new Date();
@@ -86,16 +89,16 @@ export class WidgetPeriodComponent implements OnInit {
 
   private getSelector() {
     switch (this.type) {
-      case 'month':
+      case WidgetTypes.Month:
         return WidgetMonthState.getMonth;
 
-      case 'half':
+      case WidgetTypes.Half:
         return WidgetHalfState.getHalf;
 
-      case 'week':
+      case WidgetTypes.Week:
         return WidgetWeekState.getWeek;
 
-      case 'day':
+      case WidgetTypes.Day:
       default:
         return WidgetDayState.getDay;
     }
