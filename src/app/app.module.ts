@@ -3,7 +3,6 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
-import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { NgxsModule } from '@ngxs/store';
 
@@ -32,7 +31,7 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     MatSidenavModule,
     NgxsModule.forRoot([], { developmentMode: !environment.production }),
-    NgxsLoggerPluginModule.forRoot({ collapsed: true }),
+    // NgxsLoggerPluginModule.forRoot({ collapsed: true }),
     NgxsStoragePluginModule.forRoot({ key: ['auth.user'] }),
     CoreModule,
     AuthModule

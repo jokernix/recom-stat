@@ -1,3 +1,5 @@
+import { startOfDay } from 'date-fns';
+
 const holidays = new Set(
   [
     '2018-01-01',
@@ -47,9 +49,11 @@ const holidays = new Set(
     '2020-05-11',
     '2020-06-12',
     '2020-11-04'
-  ].map(day => new Date(day))
+  ].map(day => startOfDay(new Date(day)).getTime())
 );
 
-const workingDays = new Set(['2018-04-28', '2018-06-09', '2018-12-29'].map(day => new Date(day)));
+const workingDays = new Set(
+  ['2018-04-28', '2018-06-09', '2018-12-29'].map(day => startOfDay(new Date(day)).getTime())
+);
 
 export { holidays, workingDays };

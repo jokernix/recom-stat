@@ -37,7 +37,7 @@ function calculateNormOfWorkingDays(start: Date, end: Date): number {
 }
 
 function dayIsWeekend(day: Date): boolean {
-  return isWeekend(day) ? !workingDays.has(day) : holidays.has(day);
+  return isWeekend(day) ? !workingDays.has(day.getTime()) : holidays.has(day.getTime());
 }
 
 function setTime(date: Date, hour: number, minutes: number = 0, seconds: number = 0): Date {
