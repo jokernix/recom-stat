@@ -42,6 +42,20 @@
                     {{ period.normOfWorkingTime | time }}
                 </div>
             </li>
+            <li>
+                <div class="widget-values__label">Difference</div>
+                <div
+                    class="widget-values__value"
+                    *ngIf="!period.loading; else loading"
+                    [class.widget-values__value--positive]="period.difference < 0"
+                    [class.widget-values__value--negative]="period.difference > 0"
+                >
+                    <ng-container *ngIf="period.difference; else noData">
+                        <span>{{ period.difference > 0 ? '-' : '+' }}</span>
+                        {{ period.difference | time }}
+                    </ng-container>
+                </div>
+            </li>
             <li *ngIf="type !== types.Day">
                 <div class="widget-values__label">Avg. hours per day</div>
                 <div class="widget-values__value" *ngIf="!period.loading; else loading">

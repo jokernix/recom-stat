@@ -3,7 +3,11 @@
 //@import '~@angular/material/prebuilt-themes/pink-bluegrey.css';
 @import '~@angular/material/prebuilt-themes/purple-green.css';
 
-$grey: #ababab;
+$red: #dc3545;
+$yellow: #ffc107;
+$green: #28a745;
+$gray: #6c757d;
+$gray-dark: #343a40;
 
 html,
 body,
@@ -48,6 +52,14 @@ body {
     margin-top: 4px;
     font-size: 24px;
     font-weight: 300;
+
+    &--positive {
+      color: $green;
+    }
+
+    &--negative {
+      color: $red;
+    }
   }
 }
 
@@ -64,23 +76,23 @@ body {
 
 @-webkit-keyframes blink {
   0% {
-    background-color: transparentize($grey, 0.5);
+    background-color: transparentize($gray, 0.5);
   }
   50% {
-    background-color: transparentize($grey, 0.25);
+    background-color: transparentize($gray, 0.25);
   }
   100% {
-    background-color: transparentize($grey, 0.5);
+    background-color: transparentize($gray, 0.5);
   }
 }
 @keyframes blink {
   0% {
-    background-color: transparentize($grey, 0.5);
+    background-color: transparentize($gray, 0.5);
   }
   50% {
-    background-color: transparentize($grey, 0.25);
+    background-color: transparentize($gray, 0.25);
   }
   100% {
-    background-color: transparentize($grey, 0.5);
+    background-color: transparentize($gray, 0.5);
   }
 }

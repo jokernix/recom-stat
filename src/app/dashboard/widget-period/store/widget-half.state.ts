@@ -13,7 +13,6 @@ import {
 import { concatMap, switchMap } from 'rxjs/operators';
 import { Widget, WidgetPeriod } from '../../../core/models/widget.model';
 import { DatesService } from '../../../core/services/dates.service';
-import { isNotEmpty } from '../../../core/utils/is-not-empty';
 import {
   GetCachedDataOfHalf,
   GetNextHalf,
@@ -97,14 +96,7 @@ export class WidgetHalfState {
     return ctx.dispatch(new SaveDataOfHalfToStore(widgetHalf)).pipe(
       concatMap(() => this.datesService.getPeriod(widgetHalf.start, widgetHalf.end)),
       switchMap(res => {
-        widgetHalf.loading = false;
-
-        if (isNotEmpty(res)) {
-          widgetHalf.activityPercent = res.activity_percent;
-          widgetHalf.dates = res.dates;
-          widgetHalf.duration = res.duration;
-          widgetHalf.avgHoursPerDay = Math.round(res.duration / res.dates.length);
-        }
+        widgetHalf.update(res);
 
         return ctx.dispatch(new SaveDataOfHalfToStore(widgetHalf));
       })

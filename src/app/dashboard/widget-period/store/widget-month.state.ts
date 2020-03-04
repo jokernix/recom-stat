@@ -5,7 +5,6 @@ import { concatMap, switchMap } from 'rxjs/operators';
 
 import { Widget, WidgetPeriod } from '../../../core/models/widget.model';
 import { DatesService } from '../../../core/services/dates.service';
-import { isNotEmpty } from '../../../core/utils/is-not-empty';
 import {
   GetCachedDataOfMonth,
   LoadDataOfMonth,
@@ -57,14 +56,7 @@ export class WidgetMonthState {
     return ctx.dispatch(new SaveDataOfMonthToStore(widgetMonth)).pipe(
       concatMap(() => this.datesService.getPeriod(widgetMonth.start, widgetMonth.end)),
       switchMap(res => {
-        widgetMonth.loading = false;
-
-        if (isNotEmpty(res)) {
-          widgetMonth.activityPercent = res.activity_percent;
-          widgetMonth.dates = res.dates;
-          widgetMonth.duration = res.duration;
-          widgetMonth.avgHoursPerDay = Math.round(res.duration / res.dates.length);
-        }
+        widgetMonth.update(res);
 
         return ctx.dispatch(new SaveDataOfMonthToStore(widgetMonth));
       })

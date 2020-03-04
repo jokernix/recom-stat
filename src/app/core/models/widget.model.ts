@@ -1,21 +1,23 @@
 import { isWithinInterval } from 'date-fns';
 import { calculateNormOfWorkingDays, calculateNormOfWorkingTime } from '../utils/date';
+import { isNotEmpty } from '../utils/is-not-empty';
 import { DateModel } from './date.model';
+import { UserWithDates } from './user-with-dates.model';
 
-export interface WidgetModel {
-  activityPercent?: number;
-  dates?: DateModel[];
-  duration?: number;
-  loading: boolean;
-}
-
-export interface WidgetPeriod extends WidgetModel {
+export interface WidgetPeriod {
   id: string;
   start: Date;
   end: Date;
-  normOfWorkingTime?: number;
+  loading: boolean;
+
   dynamicNormOfWorkingTime?: number;
+  normOfWorkingTime?: number;
+
+  activityPercent?: number;
   avgHoursPerDay?: number;
+  dates?: DateModel[];
+  duration?: number;
+  difference?: number;
 }
 
 export class Widget implements WidgetPeriod {
@@ -31,6 +33,7 @@ export class Widget implements WidgetPeriod {
   activityPercent?: number;
   dates?: DateModel[];
   duration?: number;
+  difference?: number;
 
   constructor(id, start, end) {
     this.id = id;
@@ -45,6 +48,22 @@ export class Widget implements WidgetPeriod {
       if (isWithinInterval(new Date(), { start, end })) {
         this.dynamicNormOfWorkingTime = calculateNormOfWorkingDays(start, new Date());
       }
+    }
+  }
+
+  update(value?: UserWithDates) {
+    this.loading = false;
+
+    if (isNotEmpty(value)) {
+      this.activityPercent = value.activity_percent;
+      this.dates = value.dates;
+      this.duration = value.duration;
+
+      if (this.end) {
+        this.avgHoursPerDay = Math.round(value.duration / value.dates.length);
+      }
+
+      this.difference = (this.dynamicNormOfWorkingTime || this.normOfWorkingTime) - this.duration;
     }
   }
 }
