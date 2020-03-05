@@ -1,4 +1,4 @@
-import { isWithinInterval } from 'date-fns';
+import { isToday, isWithinInterval, startOfYesterday } from 'date-fns';
 import { calculateNormOfWorkingDays, calculateNormOfWorkingTime } from '../utils/date';
 import { isNotEmpty } from '../utils/is-not-empty';
 import { DateModel } from './date.model';
@@ -42,11 +42,13 @@ export class Widget implements WidgetPeriod {
 
     this.normOfWorkingTime = calculateNormOfWorkingDays(start, end);
 
-    if (end == null) {
+    if (isToday(start)) {
       this.dynamicNormOfWorkingTime = calculateNormOfWorkingTime(start);
     } else {
       if (isWithinInterval(new Date(), { start, end })) {
-        this.dynamicNormOfWorkingTime = calculateNormOfWorkingDays(start, new Date());
+        this.dynamicNormOfWorkingTime =
+          calculateNormOfWorkingDays(start, startOfYesterday()) +
+          calculateNormOfWorkingTime(new Date());
       }
     }
   }
