@@ -38,8 +38,21 @@
             <li>
                 <div class="widget-values__label">Norm of working time</div>
                 <div class="widget-values__value">
-                    <span *ngIf="period.dynamicNormOfWorkingTime">{{ period.dynamicNormOfWorkingTime | time }} / </span>
-                    {{ period.normOfWorkingTime | time }}
+                    <span
+                        *ngIf="period.dynamicNormOfWorkingTime"
+                        [matTooltip]="'Days: ' + (period.dynamicNormOfWorkingTime | days)"
+                        [matTooltipDisabled]="type === types.Day"
+                        [matTooltipShowDelay]="300"
+                    >
+                        {{ period.dynamicNormOfWorkingTime | time }} /
+                    </span>
+                    <span
+                        [matTooltip]="'Days: ' + (period.normOfWorkingTime | days)"
+                        [matTooltipDisabled]="type === types.Day"
+                        [matTooltipShowDelay]="300"
+                    >
+                        {{ period.normOfWorkingTime | time }}
+                    </span>
                 </div>
             </li>
             <li>

@@ -9,8 +9,10 @@ import { MatInputModule } from '@angular/material/input';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { NgxsModule } from '@ngxs/store';
+import { DaysPipe } from '../core/services/days.pipe';
 
 import { TimePipe } from '../core/services/time.pipe';
 import { DashboardComponent } from './dashboard.component';
@@ -23,15 +25,14 @@ import { WidgetPeriodComponent } from './widget-period/widget-period.component';
 const MaterialModules = [
   MatButtonModule,
   MatCardModule,
-  // MatFormFieldModule,
+  MatDatepickerModule,
   MatIconModule,
   MatInputModule,
   MatMenuModule,
-  MatToolbarModule,
-  // MatListModule,
-  MatDatepickerModule,
   MatNativeDateModule,
-  MatProgressSpinnerModule
+  MatProgressSpinnerModule,
+  MatToolbarModule,
+  MatTooltipModule
 ];
 
 @Injectable()
@@ -42,7 +43,7 @@ export class MyDateAdapter extends NativeDateAdapter {
 }
 
 @NgModule({
-  declarations: [DashboardComponent, WidgetPeriodComponent, TimePipe],
+  declarations: [DashboardComponent, WidgetPeriodComponent, TimePipe, DaysPipe],
   imports: [
     CommonModule,
     RouterModule.forChild([{ path: '', component: DashboardComponent }]),
