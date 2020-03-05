@@ -42,7 +42,7 @@ export class Widget implements WidgetPeriod {
 
     this.normOfWorkingTime = calculateNormOfWorkingDays(start, end);
 
-    if (isToday(start)) {
+    if (isToday(start) || end == null) {
       this.dynamicNormOfWorkingTime = calculateNormOfWorkingTime(start);
     } else {
       if (isWithinInterval(new Date(), { start, end })) {
