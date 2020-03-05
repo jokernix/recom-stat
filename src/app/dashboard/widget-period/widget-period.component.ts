@@ -75,8 +75,10 @@ export class WidgetPeriodComponent implements OnInit {
   }
 
   chosenMonthHandler(date: Date, datepicker: MatDatepicker<any>) {
-    this.store.dispatch(new GetCachedDataOfMonth(date));
-    datepicker.close();
+    if (this.type === WidgetTypes.Month) {
+      this.store.dispatch(new GetCachedDataOfMonth(date));
+      datepicker.close();
+    }
   }
 
   prevHalf() {
