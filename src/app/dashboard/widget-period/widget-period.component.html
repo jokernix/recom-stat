@@ -39,7 +39,10 @@
                 <div class="widget-values__label">Norm of working time</div>
                 <div class="widget-values__value">
                     <span
-                        *ngIf="period.dynamicNormOfWorkingTime"
+                        *ngIf="
+                            period.dynamicNormOfWorkingTime &&
+                            period.dynamicNormOfWorkingTime < period.normOfWorkingTime
+                        "
                         [matTooltip]="'Days: ' + (period.dynamicNormOfWorkingTime | days)"
                         [matTooltipDisabled]="type === types.Day"
                         [matTooltipShowDelay]="300"

@@ -1,6 +1,7 @@
 import {
   differenceInSeconds,
   eachDayOfInterval,
+  isAfter,
   isBefore,
   isSameDay,
   isToday,
@@ -22,6 +23,10 @@ function calculateNormOfWorkingTime(date: Date): number {
 
     const norm = differenceInSeconds(new Date(), startOfWorkingDay);
     return isBefore(new Date(), lunchTime) ? norm : norm - SECONDS_IN_HOUR;
+  }
+
+  if (isToday(date) && isAfter(new Date(), endOfWorkingDay)) {
+    return SECONDS_IN_DAY;
   }
 
   return null;
