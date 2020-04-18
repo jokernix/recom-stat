@@ -24,7 +24,11 @@ function calculateNormOfWorkingTime(date: Date): number {
     return 0;
   }
 
-  if (isToday(date) && isWithinInterval(now, { start: startOfWorkingDay, end: endOfWorkingDay })) {
+  if (
+    isToday(date) &&
+    isWithinInterval(now, { start: startOfWorkingDay, end: endOfWorkingDay }) &&
+    !dayIsWeekend(date)
+  ) {
     const lunchTime = setTime(date, 13);
 
     const norm = differenceInSeconds(now, startOfWorkingDay);
@@ -57,4 +61,4 @@ function setTime(date: Date, hour: number, minutes: number = 0, seconds: number 
   return d;
 }
 
-export { calculateNormOfWorkingTime, calculateNormOfWorkingDays };
+export { calculateNormOfWorkingTime, calculateNormOfWorkingDays, dayIsWeekend };

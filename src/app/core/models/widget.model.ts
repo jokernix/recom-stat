@@ -1,5 +1,9 @@
-import { isToday, isWithinInterval, startOfYesterday } from 'date-fns';
-import { calculateNormOfWorkingDays, calculateNormOfWorkingTime } from '../utils/date';
+import { isToday, isWithinInterval, startOfDay, startOfYesterday } from 'date-fns';
+import {
+  calculateNormOfWorkingDays,
+  calculateNormOfWorkingTime,
+  dayIsWeekend
+} from '../utils/date';
 import { isNotEmpty } from '../utils/is-not-empty';
 import { DateModel } from './date.model';
 import { UserWithDates } from './user-with-dates.model';
@@ -65,7 +69,20 @@ export class Widget implements WidgetPeriod {
         this.avgHoursPerDay = Math.round(value.duration / value.dates.length);
       }
 
-      this.difference = (this.dynamicNormOfWorkingTime || this.normOfWorkingTime) - this.duration;
+      const norm =
+        this.dynamicNormOfWorkingTime && this.dynamicNormOfWorkingTime < this.normOfWorkingTime
+          ? this.dynamicNormOfWorkingTime
+          : this.normOfWorkingTime;
+
+      this.difference = norm - this.duration;
+
+      if (
+        this.dates.length === 1 &&
+        isToday(new Date(this.dates[0].date)) &&
+        dayIsWeekend(startOfDay(new Date(this.dates[0].date)))
+      ) {
+        this.difference = this.duration * -1;
+      }
     }
   }
 }
