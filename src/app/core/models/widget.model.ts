@@ -2,7 +2,7 @@ import { isToday, isWithinInterval, startOfDay, startOfYesterday } from 'date-fn
 import {
   calculateNormOfWorkingDays,
   calculateNormOfWorkingTime,
-  dayIsWeekend
+  dayIsWeekend,
 } from '../utils/date';
 import { isNotEmpty } from '../utils/is-not-empty';
 import { DateModel } from './date.model';

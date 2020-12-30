@@ -48,12 +48,30 @@ const holidays = new Set(
     '2020-05-05',
     '2020-05-11',
     '2020-06-12',
-    '2020-11-04'
-  ].map(day => startOfDay(new Date(day)).getTime())
+    '2020-11-04',
+
+    '2021-01-01',
+    '2021-01-04',
+    '2021-01-05',
+    '2021-01-06',
+    '2021-01-07',
+    '2021-01-08',
+    '2021-02-22',
+    '2021-02-23',
+    '2021-03-08',
+    '2021-05-03',
+    '2021-05-10',
+    '2021-06-14',
+    '2021-11-04',
+    '2021-11-05',
+    '2021-12-31',
+  ].map((day) => startOfDay(new Date(day)).getTime())
 );
 
 const workingDays = new Set(
-  ['2018-04-28', '2018-06-09', '2018-12-29'].map(day => startOfDay(new Date(day)).getTime())
+  ['2018-04-28', '2018-06-09', '2018-12-29', '2021-02-20'].map((day) =>
+    startOfDay(new Date(day)).getTime()
+  )
 );
 
 export { holidays, workingDays };
