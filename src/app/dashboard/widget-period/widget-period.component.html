@@ -29,7 +29,7 @@
             </li>
             <li>
                 <div class="widget-values__label">Time</div>
-                <div class="widget-values__value" *ngIf="!period.loading; else loading">
+                <div class="widget-values__value" *ngIf="!period.loading; else loading" (click)="copyText(period.duration)">
                     <ng-container *ngIf="period.duration; else noData">
                         {{ period.duration | time }}
                     </ng-container>
