@@ -5,8 +5,7 @@ import {
   dayIsWeekend,
 } from '../utils/date';
 import { isNotEmpty } from '../utils/is-not-empty';
-import { DateModel } from './date.model';
-import { UserWithDates } from './user-with-dates.model';
+import { DailyActivity } from './daily-activity.model';
 
 export interface WidgetPeriod {
   id: string;
@@ -19,7 +18,7 @@ export interface WidgetPeriod {
 
   activityPercent?: number;
   avgHoursPerDay?: number;
-  dates?: DateModel[];
+  dates?: DailyActivity[];
   duration?: number;
   difference?: number;
 }
@@ -35,7 +34,7 @@ export class Widget implements WidgetPeriod {
 
   avgHoursPerDay?: number;
   activityPercent?: number;
-  dates?: DateModel[];
+  dates?: DailyActivity[];
   duration?: number;
   difference?: number;
 
@@ -57,16 +56,26 @@ export class Widget implements WidgetPeriod {
     }
   }
 
-  update(value?: UserWithDates) {
+  update(values?: DailyActivity[]) {
     this.loading = false;
 
-    if (isNotEmpty(value)) {
-      this.activityPercent = value.activity_percent;
-      this.dates = value.dates;
-      this.duration = value.duration;
+    if (isNotEmpty(values)) {
+      this.dates = values;
+
+      const { tracked, overall } = values.reduce(
+        (acc, value) => {
+          acc.tracked += value.tracked;
+          acc.overall += value.overall;
+          return acc;
+        },
+        { tracked: 0, overall: 0 }
+      );
+
+      this.activityPercent = overall / tracked;
+      this.duration = tracked;
 
       if (this.end) {
-        this.avgHoursPerDay = Math.round(value.duration / value.dates.length);
+        this.avgHoursPerDay = Math.round(this.duration / this.dates.length);
       }
 
       const norm =

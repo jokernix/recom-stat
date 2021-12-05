@@ -1,11 +1,9 @@
-import { UserWithDates } from './user-with-dates.model';
-
 export interface Organization {
-  id: number;
-  name: string;
-  last_activity: string;
-  duration: number;
-  activity_percent: number;
-  tasks_duration: number;
-  users: UserWithDates[];
+  id?: number;
+  name?: string;
+  status?: string;
+  created_at?: string;
+  updated_at?: string;
+  metadata?: object;
+  invite_url?: string;
 }

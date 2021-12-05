@@ -8,7 +8,7 @@ import { DatesService } from '../../../core/services/dates.service';
 import {
   GetCachedDataOfMonth,
   LoadDataOfMonth,
-  SaveDataOfMonthToStore
+  SaveDataOfMonthToStore,
 } from './widget-month.actions';
 
 export interface WidgetMonthStateModel {
@@ -18,7 +18,7 @@ export interface WidgetMonthStateModel {
 
 @State<WidgetMonthStateModel>({
   name: 'month',
-  defaults: { months: new Map(), selectedMonth: null }
+  defaults: { months: new Map(), selectedMonth: null },
 })
 @Injectable()
 export class WidgetMonthState {
@@ -54,8 +54,8 @@ export class WidgetMonthState {
     );
 
     return ctx.dispatch(new SaveDataOfMonthToStore(widgetMonth)).pipe(
-      concatMap(() => this.datesService.getPeriod(widgetMonth.start, widgetMonth.end)),
-      switchMap(res => {
+      concatMap(() => this.datesService.getDailyActivities(widgetMonth.start, widgetMonth.end)),
+      switchMap((res) => {
         widgetMonth.update(res);
 
         return ctx.dispatch(new SaveDataOfMonthToStore(widgetMonth));

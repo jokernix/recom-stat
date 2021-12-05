@@ -23,7 +23,7 @@
                 <div class="widget-values__label">Avg. Activity</div>
                 <div class="widget-values__value" *ngIf="!period.loading; else loading">
                     <ng-container *ngIf="period.activityPercent; else noData">
-                        {{ period.activityPercent || 0 }}%
+                        {{ period.activityPercent | percent }}
                     </ng-container>
                 </div>
             </li>

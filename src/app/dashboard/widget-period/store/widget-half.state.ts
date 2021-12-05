@@ -8,7 +8,7 @@ import {
   isSameDay,
   startOfDay,
   startOfMonth,
-  subDays
+  subDays,
 } from 'date-fns';
 import { concatMap, switchMap } from 'rxjs/operators';
 import { Widget, WidgetPeriod } from '../../../core/models/widget.model';
@@ -18,7 +18,7 @@ import {
   GetNextHalf,
   GetPrevHalf,
   LoadDataOfHalf,
-  SaveDataOfHalfToStore
+  SaveDataOfHalfToStore,
 } from './widget-half.actions';
 
 export interface WidgetHalfStateModel {
@@ -28,7 +28,7 @@ export interface WidgetHalfStateModel {
 
 @State<WidgetHalfStateModel>({
   name: 'half',
-  defaults: { items: new Map<string, WidgetPeriod>(), selectedHalf: null }
+  defaults: { items: new Map<string, WidgetPeriod>(), selectedHalf: null },
 })
 @Injectable()
 export class WidgetHalfState {
@@ -94,8 +94,8 @@ export class WidgetHalfState {
     const widgetHalf: Widget = new Widget(WidgetHalfState.generateKey(date), start, end);
 
     return ctx.dispatch(new SaveDataOfHalfToStore(widgetHalf)).pipe(
-      concatMap(() => this.datesService.getPeriod(widgetHalf.start, widgetHalf.end)),
-      switchMap(res => {
+      concatMap(() => this.datesService.getDailyActivities(widgetHalf.start, widgetHalf.end)),
+      switchMap((res) => {
         widgetHalf.update(res);
 
         return ctx.dispatch(new SaveDataOfHalfToStore(widgetHalf));

@@ -14,7 +14,7 @@ export interface WidgetWeekStateModel {
 
 @State<WidgetWeekStateModel>({
   name: 'week',
-  defaults: { weeks: new Map(), selectedWeek: null }
+  defaults: { weeks: new Map(), selectedWeek: null },
 })
 @Injectable()
 export class WidgetWeekState {
@@ -50,8 +50,8 @@ export class WidgetWeekState {
     );
 
     return ctx.dispatch(new SaveDataOfWeekToStore(widgetWeek)).pipe(
-      concatMap(() => this.datesService.getPeriod(widgetWeek.start, widgetWeek.end)),
-      switchMap(res => {
+      concatMap(() => this.datesService.getDailyActivities(widgetWeek.start, widgetWeek.end)),
+      switchMap((res) => {
         widgetWeek.update(res);
 
         return ctx.dispatch(new SaveDataOfWeekToStore(widgetWeek));

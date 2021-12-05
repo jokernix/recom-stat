@@ -1,33 +1,32 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Store } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { Organization } from '../models/organization.model';
-import { UserWithDates } from '../models/user-with-dates.model';
+import { AuthState } from '../../auth/store/auth.state';
+import { DailyActivity } from '../models/daily-activity.model';
+import { getUTC } from '../utils/date';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class DatesService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private store: Store) {}
 
-  getPeriod(startDate: Date, endDate: Date): Observable<UserWithDates> {
-    let params = new HttpParams();
-    const startDateUTC = new Date(
-      Date.UTC(startDate.getFullYear(), startDate.getMonth(), startDate.getDate())
-    );
-    const endDateUTC = new Date(
-      Date.UTC(endDate.getFullYear(), endDate.getMonth(), endDate.getDate())
-    );
-    params = params.append('start_date', startDateUTC.toISOString());
-    params = params.append('end_date', endDateUTC.toISOString());
-    params = params.append('show_activity', 'true');
+  getDailyActivities(start: Date, end: Date): Observable<DailyActivity[]> {
+    const organizationId = this.store.selectSnapshot(AuthState.getOrganization)?.id;
 
     return this.http
-      .get<{ organizations: Organization[] }>('/custom/by_member/my', { params })
-      .pipe(
-        map(res => (res.organizations.length ? res.organizations[0] : { users: [] })),
-        map(org => org.users[0])
-      );
+      .get<{
+        pagination?: { next_page_start_id: number };
+        daily_activities: DailyActivity[];
+      }>(`/organizations/${organizationId}/activities/daily`, {
+        params: {
+          page_limit: 500,
+          'date[start]': getUTC(start).toISOString(),
+          'date[stop]': getUTC(end).toISOString(),
+        },
+      })
+      .pipe(map((res) => res.daily_activities));
   }
 }

@@ -3,6 +3,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
+import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { NgxsStoragePluginModule } from '@ngxs/storage-plugin';
 import { NgxsModule } from '@ngxs/store';
 
@@ -18,9 +19,9 @@ const routes: Routes = [
   {
     path: 'dashboard',
     canActivate: [AuthGuard],
-    loadChildren: () => import('./dashboard').then(m => m.DashboardModule)
+    loadChildren: () => import('./dashboard').then((m) => m.DashboardModule),
   },
-  { path: '', redirectTo: '/dashboard', pathMatch: 'full' }
+  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
 ];
 
 @NgModule({
@@ -31,11 +32,11 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     MatSidenavModule,
     NgxsModule.forRoot([], { developmentMode: !environment.production }),
-    // NgxsLoggerPluginModule.forRoot({ collapsed: true }),
-    NgxsStoragePluginModule.forRoot({ key: ['auth.user'] }),
+    NgxsLoggerPluginModule.forRoot({ collapsed: true }),
+    NgxsStoragePluginModule.forRoot({ key: ['auth'] }),
     CoreModule,
-    AuthModule
+    AuthModule,
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

@@ -1,49 +1,62 @@
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
-import { of } from 'rxjs';
-import { catchError, switchMap } from 'rxjs/operators';
+import { forkJoin, of, switchMapTo } from 'rxjs';
+import { catchError, switchMap, tap } from 'rxjs/operators';
+import { Organization } from '../../core/models/organization.model';
+import { Tokens } from '../../core/models/tokens.model';
 
-import { UserWithToken } from '../../core/models/user-with-token.model';
+import { User } from '../../core/models/user.model';
 import { AuthService } from '../../core/services/auth.service';
-import {
-  Login,
-  LoginFailed,
-  LoginRedirect,
-  LoginSuccess,
-  Logout,
-  LogoutSuccess
-} from './auth.actions';
+import { Login, LoginFailed, Logout, LogoutSuccess, SaveTokens } from './auth.actions';
 
-export interface AuthStateModel {
-  user: UserWithToken;
+export interface AuthStateModel extends Tokens {
+  user: User;
+  organization?: Organization;
 }
 
 @State<AuthStateModel>({
   name: 'auth',
   defaults: {
-    user: null
-  }
+    user: null,
+    accessToken: null,
+    refreshToken: null,
+  },
 })
 @Injectable()
 export class AuthState {
   @Selector()
   static getToken(state: AuthStateModel): string {
-    return state.user.auth_token;
+    return state.accessToken;
   }
 
   @Selector()
-  static getUser(state: AuthStateModel): UserWithToken {
+  static getRefreshToken(state: AuthStateModel): string {
+    return state.refreshToken;
+  }
+
+  @Selector()
+  static getUser(state: AuthStateModel): User {
     return state.user;
   }
 
-  constructor(private store: Store, private authService: AuthService, private router: Router) {}
+  @Selector()
+  static getOrganization(state: AuthStateModel): Organization {
+    return state.organization;
+  }
+
+  constructor(private store: Store, private authService: AuthService) {}
 
   @Action(Login)
-  login(ctx: StateContext<AuthStateModel>, { email, password }: Login) {
-    return this.authService.login(email, password).pipe(
-      switchMap(user => ctx.dispatch(new LoginSuccess(user))),
-      catchError(error => {
+  login(ctx: StateContext<AuthStateModel>, { token }: Login) {
+    ctx.patchState({ refreshToken: token });
+
+    return this.authService.getAccessToken(token).pipe(
+      switchMap((tokens) => ctx.dispatch(new SaveTokens(tokens))),
+      switchMapTo(
+        forkJoin([this.authService.getCurrentUser(), this.authService.getOrganization()])
+      ),
+      tap(([user, organization]) => ctx.patchState({ user, organization })),
+      catchError((error) => {
         ctx.dispatch(new LoginFailed(error));
         return of(null);
       })
@@ -55,24 +68,13 @@ export class AuthState {
     ctx.dispatch(new LogoutSuccess());
   }
 
-  @Action(LoginSuccess)
-  onLoginSuccess() {
-    this.router.navigate(['/dashboard']);
-  }
-
-  @Action(LoginSuccess)
-  setUserStateOnSuccess(ctx: StateContext<AuthStateModel>, event: LoginSuccess) {
-    ctx.patchState({ user: event.user });
+  @Action(SaveTokens)
+  setTokensStateOnSuccess(ctx: StateContext<AuthStateModel>, event: SaveTokens) {
+    ctx.patchState(event.tokens);
   }
 
   @Action([LoginFailed, LogoutSuccess])
   setUserStateOnFailure(ctx: StateContext<AuthStateModel>) {
-    ctx.setState({ user: null });
-    ctx.dispatch(new LoginRedirect());
-  }
-
-  @Action(LoginRedirect)
-  onLoginRedirect() {
-    this.router.navigate(['/login']);
+    ctx.setState({ user: null, refreshToken: null, accessToken: null });
   }
 }

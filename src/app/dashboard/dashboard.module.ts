@@ -12,9 +12,9 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { RouterModule } from '@angular/router';
 import { NgxsModule } from '@ngxs/store';
-import { DaysPipe } from '../core/services/days.pipe';
+import { DaysPipe } from '../core/pipes/days.pipe';
 
-import { TimePipe } from '../core/services/time.pipe';
+import { TimePipe } from '../core/pipes/time.pipe';
 import { DashboardComponent } from './dashboard.component';
 import { WidgetDayState } from './widget-period/store/widget-day.state';
 import { WidgetHalfState } from './widget-period/store/widget-half.state';
@@ -32,7 +32,7 @@ const MaterialModules = [
   MatNativeDateModule,
   MatProgressSpinnerModule,
   MatToolbarModule,
-  MatTooltipModule
+  MatTooltipModule,
 ];
 
 @Injectable()
@@ -48,8 +48,8 @@ export class MyDateAdapter extends NativeDateAdapter {
     CommonModule,
     RouterModule.forChild([{ path: '', component: DashboardComponent }]),
     NgxsModule.forFeature([WidgetDayState, WidgetWeekState, WidgetMonthState, WidgetHalfState]),
-    ...MaterialModules
+    ...MaterialModules,
   ],
-  providers: [{ provide: DateAdapter, useClass: MyDateAdapter }]
+  providers: [{ provide: DateAdapter, useClass: MyDateAdapter }],
 })
 export class DashboardModule {}

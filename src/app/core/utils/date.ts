@@ -7,7 +7,7 @@ import {
   isToday,
   isWeekend,
   isWithinInterval,
-  startOfDay
+  startOfDay,
 } from 'date-fns';
 import { holidays, workingDays } from '../models/working-days';
 
@@ -61,4 +61,8 @@ function setTime(date: Date, hour: number, minutes: number = 0, seconds: number 
   return d;
 }
 
-export { calculateNormOfWorkingTime, calculateNormOfWorkingDays, dayIsWeekend };
+function getUTC(date: Date): Date {
+  return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+}
+
+export { calculateNormOfWorkingTime, calculateNormOfWorkingDays, dayIsWeekend, getUTC };

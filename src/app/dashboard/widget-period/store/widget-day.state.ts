@@ -13,7 +13,7 @@ export interface WidgetDayStateModel {
 
 @State<WidgetDayStateModel>({
   name: 'day',
-  defaults: { days: new Map<string, WidgetPeriod>(), selectedDay: null }
+  defaults: { days: new Map<string, WidgetPeriod>(), selectedDay: null },
 })
 @Injectable()
 export class WidgetDayState {
@@ -40,8 +40,8 @@ export class WidgetDayState {
     const widgetDay: Widget = new Widget(null, date, null);
 
     return ctx.dispatch(new SaveDataOfDayToStore(widgetDay)).pipe(
-      concatMap(() => this.datesService.getPeriod(date, date)),
-      switchMap(res => {
+      concatMap(() => this.datesService.getDailyActivities(date, date)),
+      switchMap((res) => {
         widgetDay.update(res);
 
         return ctx.dispatch(new SaveDataOfDayToStore(widgetDay));
