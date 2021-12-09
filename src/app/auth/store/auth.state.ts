@@ -70,7 +70,7 @@ export class AuthState {
 
   @Action(SaveTokens)
   setTokensStateOnSuccess(ctx: StateContext<AuthStateModel>, event: SaveTokens) {
-    ctx.patchState(event.tokens);
+    ctx.patchState({ accessToken: event.tokens.accessToken });
   }
 
   @Action([LoginFailed, LogoutSuccess])
