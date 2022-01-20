@@ -8,18 +8,19 @@ import { MatInputModule } from '@angular/material/input';
 import { NgxsModule } from '@ngxs/store';
 import { LoginComponent } from './login.component';
 import { AuthState } from './store/auth.state';
+import { ThirdPartyComponent } from './third-party.component';
 
 const MaterialModules = [
   MatCardModule,
   ReactiveFormsModule,
   MatFormFieldModule,
   MatInputModule,
-  MatButtonModule
+  MatButtonModule,
 ];
 
 @NgModule({
-  declarations: [LoginComponent],
+  declarations: [LoginComponent, ThirdPartyComponent],
   imports: [CommonModule, NgxsModule.forFeature([AuthState]), ...MaterialModules],
-  exports: [LoginComponent]
+  exports: [LoginComponent, ThirdPartyComponent],
 })
 export class AuthModule {}

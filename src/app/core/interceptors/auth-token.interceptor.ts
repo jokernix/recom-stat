@@ -20,7 +20,7 @@ export class AuthTokenInterceptor implements HttpInterceptor {
   public intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     const accessToken = this.store.selectSnapshot(AuthState.getToken);
 
-    if (!request.url.includes('access_tokens')) {
+    if (!request.url.includes('access_tokens') && !request.url.includes('login')) {
       const refreshToken = this.store.selectSnapshot(AuthState.getRefreshToken);
 
       const decodedToken =

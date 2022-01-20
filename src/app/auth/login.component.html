@@ -1,19 +1,9 @@
 <div class="login-register">
     <mat-card>
         <mat-card-content>
-            <form [formGroup]="form" (ngSubmit)="onSubmit()">
-                <mat-form-field>
-                    <input matInput placeholder="Enter your refresh token" formControlName="token" required>
-                    <mat-error *ngIf="token.invalid">You must include an refresh token.</mat-error>
-                </mat-form-field>
-
-                <a mat-button href="https://developer.hubstaff.com/personal_access_tokens" target="_blank">Get token</a>
-
-                <button mat-raised-button color="primary" type="submit">
-                    Save
-                </button>
-            </form>
+            <button mat-raised-button color="primary" (click)="login()">
+                Login with Hubstaff
+            </button>
         </mat-card-content>
     </mat-card>
 </div>
-

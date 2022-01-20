@@ -11,11 +11,18 @@ import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { AuthModule } from './auth';
 import { LoginComponent } from './auth/login.component';
+import { ThirdPartyComponent } from './auth/third-party.component';
+import { ThirdPartyGuard } from './auth/third-party.guard';
 import { CoreModule } from './core/core.module';
 import { AuthGuard } from './core/services/auth.guard';
 
 const routes: Routes = [
   { path: 'login', component: LoginComponent },
+  {
+    path: 'oauth',
+    canActivate: [ThirdPartyGuard],
+    component: ThirdPartyComponent,
+  },
   {
     path: 'dashboard',
     canActivate: [AuthGuard],

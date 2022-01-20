@@ -1,13 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext, Store } from '@ngxs/store';
-import { forkJoin, of, switchMapTo } from 'rxjs';
-import { catchError, switchMap, tap } from 'rxjs/operators';
+import { forkJoin, of } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { Organization } from '../../core/models/organization.model';
 import { Tokens } from '../../core/models/tokens.model';
-
 import { User } from '../../core/models/user.model';
 import { AuthService } from '../../core/services/auth.service';
-import { Login, LoginFailed, Logout, LogoutSuccess, SaveTokens } from './auth.actions';
+import { FetchProfile, LoginFailed, Logout, LogoutSuccess, SaveTokens } from './auth.actions';
 
 export interface AuthStateModel extends Tokens {
   user: User;
@@ -46,15 +45,9 @@ export class AuthState {
 
   constructor(private store: Store, private authService: AuthService) {}
 
-  @Action(Login)
-  login(ctx: StateContext<AuthStateModel>, { token }: Login) {
-    ctx.patchState({ refreshToken: token });
-
-    return this.authService.getAccessToken(token).pipe(
-      switchMap((tokens) => ctx.dispatch(new SaveTokens(tokens))),
-      switchMapTo(
-        forkJoin([this.authService.getCurrentUser(), this.authService.getOrganization()])
-      ),
+  @Action(FetchProfile)
+  fetchProfile(ctx: StateContext<AuthStateModel>) {
+    return forkJoin([this.authService.getCurrentUser(), this.authService.getOrganization()]).pipe(
       tap(([user, organization]) => ctx.patchState({ user, organization })),
       catchError((error) => {
         ctx.dispatch(new LoginFailed(error));
@@ -70,7 +63,10 @@ export class AuthState {
 
   @Action(SaveTokens)
   setTokensStateOnSuccess(ctx: StateContext<AuthStateModel>, event: SaveTokens) {
-    ctx.patchState({ accessToken: event.tokens.accessToken });
+    ctx.patchState({
+      accessToken: event.tokens.accessToken,
+      refreshToken: event.tokens.refreshToken,
+    });
   }
 
   @Action([LoginFailed, LogoutSuccess])
